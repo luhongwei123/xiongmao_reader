@@ -39,10 +39,10 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
         widget = Navigator();
         break;
       case 2:
-        // widget = IndexSwiper();
+        widget = FloorTitle(title: '一周热门书籍推荐');
         break;
       case 3:
-        // widget = Navigator();
+        widget = WeeksRecommends();
         break;
       case 4:
         // widget = IndexSwiper();
@@ -98,8 +98,8 @@ class Navigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: ScreenUtil().setHeight(300),
-      padding: EdgeInsets.all(10),
+      // height: ScreenUtil().setHeight(400),
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
       child: GridView.count(
         crossAxisCount: 5,
         physics: new NeverScrollableScrollPhysics(), //增加
@@ -153,6 +153,109 @@ class Navigator extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+class FloorTitle extends StatelessWidget {
+
+  final String title;
+  FloorTitle({
+    this.title
+  });
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: ScreenUtil().setHeight(40),
+      padding: EdgeInsets.fromLTRB(10, 0, 5, 0),
+      child: Row(
+        mainAxisAlignment:MainAxisAlignment.spaceBetween,
+        children: < Widget > [
+          Text(title,textDirection:TextDirection.ltr,),
+          Expanded(child:Text('更多', textDirection:TextDirection.rtl, ),flex: 2,),
+          InkWell(
+            onTap: () {},
+            child: Icon(
+              IconData(
+                //code
+                0xe315,
+                //字体
+                fontFamily: 'MaterialIcons'),
+            ),
+          )
+        ],
+      ),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))
+      )
+    );
+  }
+}
+
+class WeeksRecommends extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Image.asset('asset/books/1.jpg')
+            ],
+          ),
+          GridView.count(
+            crossAxisSpacing: 3.0,
+            crossAxisCount: 4,
+            // physics: new NeverScrollableScrollPhysics(), //增加
+            shrinkWrap: true, //增加
+            padding: EdgeInsets.all(0),
+            children: < Widget > [
+                Column(
+                  children: <Widget>[
+                    InkWell(
+                      onTap: (){},
+                      child:Image.asset('asset/books/1.jpg'),
+                    ),
+                    Text('三寸人间')
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    InkWell(
+                      onTap: (){},
+                      child: Image.asset('asset/books/2.jpg',
+                        // height: ScreenUtil().setHeight(158)
+                      ),
+                    ),
+                    Text('圣墟')
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    InkWell(
+                      onTap: (){},
+                      child: Image.asset('asset/books/3.jpg',
+                        // height: ScreenUtil().setHeight(158)
+                      ),
+                    ),
+                    Text('绝品邪少')
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    InkWell(
+                      onTap: (){},
+                      child: Image.asset('asset/books/4.jpg',
+                        // height: ScreenUtil().setHeight(158)
+                      ),
+                    ),
+                    Text('道君')
+                  ],
+                )
+            ]
+          )
+        ],
+      )
     );
   }
 }

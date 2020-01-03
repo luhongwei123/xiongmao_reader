@@ -41,3 +41,7 @@ flutter:
     - asset/icon/books.png
     - asset/icon/articles.png
     - asset/icon/shares.png
+    - asset/books/1.jpg
+    - asset/books/2.jpg
+    - asset/books/3.jpg
+    - asset/books/4.jpg
