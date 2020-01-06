@@ -65,7 +65,7 @@ class _IndexSwiperState extends State < IndexSwiper > {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: ScreenUtil().setHeight(300),
+      height: ScreenUtil().setHeight(250),
       width: ScreenUtil().setWidth(750),
       padding: EdgeInsets.all(10),
       child: ClipRRect(
@@ -98,7 +98,7 @@ class Navigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: ScreenUtil().setHeight(400),
+      height: ScreenUtil().setHeight(160),
       padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
       child: GridView.count(
         crossAxisCount: 5,
@@ -165,13 +165,13 @@ class FloorTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: ScreenUtil().setHeight(40),
+      height: ScreenUtil().setHeight(80),
       padding: EdgeInsets.fromLTRB(10, 0, 5, 0),
       child: Row(
-        mainAxisAlignment:MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: < Widget > [
-          Text(title,textDirection:TextDirection.ltr,),
-          Expanded(child:Text('更多', textDirection:TextDirection.rtl, ),flex: 2,),
+          Text(title, textDirection: TextDirection.ltr, ),
+          Expanded(child: Text('更多', textDirection: TextDirection.rtl, ), flex: 2, ),
           InkWell(
             onTap: () {},
             child: Icon(
@@ -194,68 +194,131 @@ class FloorTitle extends StatelessWidget {
 class WeeksRecommends extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+    return SingleChildScrollView(
       child: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Image.asset('asset/books/1.jpg')
-            ],
-          ),
-          GridView.count(
-            crossAxisSpacing: 3.0,
-            crossAxisCount: 4,
-            // physics: new NeverScrollableScrollPhysics(), //增加
-            shrinkWrap: true, //增加
-            padding: EdgeInsets.all(0),
-            children: < Widget > [
-                Column(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: (){},
-                      child:Image.asset('asset/books/1.jpg'),
-                    ),
-                    Text('三寸人间')
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: (){},
-                      child: Image.asset('asset/books/2.jpg',
-                        // height: ScreenUtil().setHeight(158)
-                      ),
-                    ),
-                    Text('圣墟')
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: (){},
-                      child: Image.asset('asset/books/3.jpg',
-                        // height: ScreenUtil().setHeight(158)
-                      ),
-                    ),
-                    Text('绝品邪少')
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: (){},
-                      child: Image.asset('asset/books/4.jpg',
-                        // height: ScreenUtil().setHeight(158)
-                      ),
-                    ),
-                    Text('道君')
-                  ],
-                )
-            ]
-          )
+        children: < Widget > [
+          _firstRecommond(),
+          _otherRecommond(),
         ],
       )
+    );
+  }
+  Widget _firstRecommond() {
+    return Container(
+      child: Row(
+        children: < Widget > [
+          Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(5),
+                child: Image.asset('asset/books/1.jpg', width: ScreenUtil().setWidth(165)),
+              )
+            ],
+          ),
+          Column(
+            children: <Widget>[
+              Container(
+                width: ScreenUtil().setWidth(550),
+                child: Text('三寸人间',
+                  textAlign: TextAlign.left, //文本对齐方式  居中
+                  textDirection: TextDirection.ltr, //
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: ScreenUtil().setSp(30),
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                width: ScreenUtil().setWidth(550),
+                child: Text('举头三尺无神明，掌心三寸是人间。这是耳根继《仙逆》《求魔》《我欲封天》《一念永恒》后，创作的第五部长篇小说《三寸人间》。',
+                  textAlign: TextAlign.left, //文本对齐方式  居中
+                  textDirection: TextDirection.ltr, //
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontSize: ScreenUtil().setSp(15)
+                  ),
+                ),
+              ),
+              Container(
+                width: ScreenUtil().setWidth(550),
+                child: Row(
+                  children: <Widget>[
+                    Image.asset("asset/icon/author.png",width: ScreenUtil().setWidth(30),height: ScreenUtil().setHeight(30)),
+                    Text("耳根",
+                      textAlign: TextAlign.left, //文本对齐方式  居中
+                      textDirection: TextDirection.ltr, 
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: ScreenUtil().setSp(15)
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _otherRecommond() {
+    return Row(
+      children: < Widget > [
+        Container(
+          padding: EdgeInsets.all(5),
+          child: Column(
+            children: < Widget > [
+              InkWell(
+                onTap: () {},
+                child: Image.asset('asset/books/1.jpg', width: ScreenUtil().setWidth(165), ),
+              ),
+              Text('三寸人间'),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(5),
+          child: Column(
+            children: < Widget > [
+              InkWell(
+                onTap: () {},
+                child: Image.asset('asset/books/2.jpg', width: ScreenUtil().setWidth(165)),
+              ),
+              Text('圣墟'),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(5),
+          child: Column(
+            children: < Widget > [
+              InkWell(
+                onTap: () {},
+                child: Image.asset('asset/books/3.jpg', width: ScreenUtil().setWidth(165)),
+              ),
+              Text('绝品邪少'),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(5),
+          child: Column(
+            children: < Widget > [
+              InkWell(
+                onTap: () {},
+                child: Image.asset('asset/books/4.jpg', width: ScreenUtil().setWidth(165)),
+              ),
+              Text('道君')
+            ],
+          ),
+        ),
+      ]
     );
   }
 }

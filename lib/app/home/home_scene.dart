@@ -27,6 +27,7 @@ class _HomeSceneState extends State < HomeScene > {
 
   @override
   Widget build(BuildContext context) {
+    //width: 750,height: 1334
     ScreenUtil.instance = ScreenUtil(width: 750,height: 1334)..init(context);
     return Scaffold(
       appBar: _buildAppBar(_index),

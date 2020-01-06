@@ -57,11 +57,11 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
             // labelPadding: EdgeInsets.only(left: 20),
             labelColor: Colors.amber,
             labelStyle: TextStyle(
-              fontSize: ScreenUtil().setSp(28),
+              fontSize: ScreenUtil().setSp(40),
             ),
             unselectedLabelColor: Colors.black38,
             unselectedLabelStyle: TextStyle(
-              fontSize: ScreenUtil().setSp(18),
+              fontSize: ScreenUtil().setSp(28),
             ),
           ),
         ),
@@ -86,7 +86,7 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
     return <Widget > [
       SliverAppBar(
         // primary: false,
-        expandedHeight: ScreenUtil().setHeight(30),
+        expandedHeight: ScreenUtil().setHeight(50),
         floating: false, //不随着滑动隐藏标题
         backgroundColor: Colors.white,
         brightness: Brightness.light,

@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class TextSearcher extends StatelessWidget implements PreferredSizeWidget {
   @override Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(50),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
-        width: ScreenUtil().setWidth(300),
-        height: ScreenUtil().setHeight(50),
+        width: ScreenUtil().setWidth(500),
+        height: ScreenUtil().setHeight(70),
         padding: EdgeInsets.all(0),
         child: TextField(
           keyboardType: TextInputType.text,
@@ -20,13 +20,13 @@ class TextSearcher extends StatelessWidget implements PreferredSizeWidget {
             hintText: '请输入内容',
             hintStyle: TextStyle(
               color: Colors.amber,
-              fontSize: ScreenUtil().setSp(20),
+              fontSize: ScreenUtil().setSp(25),
             ),
             prefixIcon: Icon(
               Icons.search,
               color: Colors.amber
             ),
-            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 8),
+            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 14),
             filled: true,
             fillColor: Colors.grey[10],
             border: InputBorder.none
