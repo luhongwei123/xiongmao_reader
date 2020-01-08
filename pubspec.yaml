@@ -22,6 +22,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   flukit: ^1.0.2
   flutter_screenutil: ^0.7.0
+  device_info: ^0.4.0
 
 dev_dependencies:
   flutter_test:
@@ -32,17 +33,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - asset/horse.jpg
-    - asset/road.jpg
-    - asset/sea.png
-    - asset/star.jpg
-    - asset/icon/kinds.png
-    - asset/icon/ranking.png
-    - asset/icon/books.png
-    - asset/icon/articles.png
-    - asset/icon/shares.png
-    - asset/icon/author.png
-    - asset/books/1.jpg
-    - asset/books/2.jpg
-    - asset/books/3.jpg
-    - asset/books/4.jpg
+    - asset/
+    - asset/icon/
+    - asset/readers/
+    - asset/books/
+    - mock/
