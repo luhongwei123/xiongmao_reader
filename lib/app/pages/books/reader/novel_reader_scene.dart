@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xiongmao_reader/app/components/http_request.dart';
+import 'package:xiongmao_reader/app/components/page_utils.dart';
 import 'package:xiongmao_reader/app/model/novel_model.dart';
 
 class NovelReaderScene extends StatefulWidget {
@@ -16,6 +18,8 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
   Novel currentNovels;
   Novel nextNovels;
   int pageIndex= 0;
+
+  String title='';
   @override
   void initState() {
     super.initState();
@@ -26,115 +30,76 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
     );
     pageController.addListener(onScroll);
 
-    fetchArticle(this.widget.artId);
+    setup(this.widget.artId);
   }
-
-  fetchArticle(String articleId) async {
-    var response = await Request.get(action: 'article$articleId');
-    if("err" == response){
-      return;
+  setup(String articleId) async{
+    currentNovels = await fetchArticle(articleId);
+    title = currentNovels.title;
+    if (currentNovels.preArticleId != null) {
+      preNovels = await fetchArticle(currentNovels.preArticleId);
+    } else {
+      preNovels = null;
     }
-    String article = response['content'];
-    int length = article.length;
-    int page = 0;
-    if(length % 400 == 0){
-        page = (length~/400).toInt();
-    }else{
-        page = (length~/400).toInt() + 1;
-    }
-    List list = [];
-    currentNovels = Novel.fromJson(response);
-    for(int i = 0; i < page;i++){
-      int s = (i+1)*400;
-      if(s >= article.length){
-        s = article.length;
-      }
-      list.add(article.substring(400*i,s));
-    } 
-    currentNovels.addAttr(list);
-    if(response['prev_id'] != null && response['prev_id'] != '0'){
-        fetchPreArticle(response['prev_id']);
-    }
-    if(response['next_id'] != null){
-        fetchNextArticle(response['next_id']);
+    if (currentNovels.nextArticleId != null) {
+      nextNovels = await fetchArticle(currentNovels.nextArticleId);
+    } else {
+      nextNovels = null;
     }
     setState(() {});
   }
 
-  fetchPreArticle(String articleId) async {
+  Future<Novel> fetchArticle(String articleId) async {
     var response = await Request.get(action: 'article$articleId');
     if("err" == response){
-      return;
+      return null;
     }
     String article = response['content'];
-    int length = article.length;
-    int page = 0;
-    if(length % 400 == 0){
-        page = (length~/400).toInt();
-    }else{
-        page = (length~/400).toInt() + 1;
+    Novel novel = Novel.fromJson(response);
+    // title = novel.title;
+    PageUtils.page(article, novel);
+    return novel;
+  }
+
+  fetchPreArticle(String articleId) async {
+   if (preNovels != null || articleId == null) {
+      return;
     }
-    List list = [];
-    for(int i = 0; i < page;i++){
-      int s = (i+1)*400;
-      if(s >= article.length){
-        s = article.length;
-      }
-      preNovels = Novel.fromJson(response);
-      list.add(article.substring(400*i,s));
-    } 
-    preNovels.addAttr(list);
+    preNovels = await fetchArticle(articleId);
+    pageController.jumpToPage(preNovels.pageCount + pageIndex);
     setState(() {});
   }
 
   fetchNextArticle(String articleId) async {
-    var response = await Request.get(action: 'article$articleId');
-    if("err" == response){
+    if (nextNovels != null ||  articleId == null) {
       return;
     }
-    String article = response['content'];
-    int length = article.length;
-    int page = 0;
-    if(length % 400 == 0){
-        page = (length~/400).toInt();
-    }else{
-        page = (length~/400).toInt() + 1;
-    }
-    List list = [];
-    for(int i = 0; i < page;i++){
-      int s = (i+1)*400;
-      if(s >= article.length){
-        s = article.length;
-      }
-      nextNovels = Novel.fromJson(response);
-      list.add(article.substring(400*i,s));
-    } 
-    nextNovels.addAttr(list);
-     setState(() {});
+    nextNovels = await fetchArticle(articleId);
+    setState(() {});
   }
-  onScroll() {
-    if (pageIndex >= currentNovels.pageCount) {
-      print('到达下个章节了');
 
+  onScroll() {
+    var page = pageController.offset / ScreenUtil().setWidth(750.0-20-20);
+    var nextArtilePage = currentNovels.pageCount + (preNovels != null ? preNovels.pageCount : 0);
+    if (page >= nextArtilePage) {
+      print("到达下章了，下章ID:${currentNovels.nextArticleId}");
       preNovels = currentNovels;
       currentNovels = nextNovels;
       nextNovels = null;
-      pageIndex = 0;
+      title = currentNovels.title;
       pageController.jumpToPage(preNovels.pageCount);
       fetchNextArticle(currentNovels.nextArticleId);
       setState(() {});
     }
-    if (preNovels != null && pageIndex < preNovels.pageCount - 1) {
-      print('到达上个章节了');
-
+    if (preNovels != null && page <= preNovels.pageCount) {
       nextNovels = currentNovels;
       currentNovels = preNovels;
       preNovels = null;
-      pageIndex = currentNovels.pageCount - 1;
-      pageController.jumpToPage(currentNovels?.pageCount??1 - 1);
+      title = currentNovels.title;
+      pageController.jumpToPage(pageIndex-1);
       fetchPreArticle(currentNovels.preArticleId);
       setState(() {});
     }
+
   }
   @override
   Widget build(BuildContext context) {
@@ -152,7 +117,6 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
     );
   }
   Widget buildPageView(){
-    // int itemCount = (preNovels != null ? preNovels?.pageCount??0 : 0) + currentNovels?.pageCount + (nextNovels != null ? nextNovels?.pageCount??0 : 0);
     int itemCount = currentNovels?.pageCount??0;
     if(preNovels != null){
         itemCount += preNovels?.pageCount??0 ;
@@ -165,9 +129,11 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
           scrollDirection: Axis.horizontal, //垂直切换还是水平切换（默认水平，Android原生ViewPage要费很大劲才能实现）
           reverse: false, //倒置，设置true页面顺序从后往前，默认false
           onPageChanged: (currentIndex) {
+            
                setState(() {
                  pageIndex = currentIndex;
                });
+               print("当前页:${currentIndex}");
           }, //onPageChanged 监听页面改变，输出当前页面序号
           controller: pageController,
           itemCount: itemCount, //数量
@@ -184,22 +150,41 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
       page = 0;
     } else if (page < 0) {
       // 到达上一章了
-      article = nextNovels;
-      page = nextNovels.pageCount - 1;
+      article = preNovels;
+      page = preNovels.pageCount - 1;
     } else {
       article = this.currentNovels;
     }
+    String content = article.getContent(page);
+    if (content.startsWith('\n')) {
+      content = content.substring(1);
+    }
     return Stack(
-      children: <Widget>[
+      children: < Widget > [
         Container(
-          margin: EdgeInsets.fromLTRB(20, 20, 10, 30),
-          child: RichText(
-            text:TextSpan(
-              text:article.getContent(page),
-              style: TextStyle(color: Colors.deepOrangeAccent, fontSize: 20.0),
-            )
-          ),
+          margin: EdgeInsets.fromLTRB(ScreenUtil().setHeight(10), ScreenUtil().setHeight(30), 0, 0),
+          child: Text(title, style: TextStyle(fontSize: ScreenUtil().setSp(20)), ),
         ),
+        Container(
+          color: Colors.transparent,
+          margin: EdgeInsets.fromLTRB(ScreenUtil().setHeight(20), ScreenUtil().setHeight(80), ScreenUtil().setHeight(20), ScreenUtil().setHeight(20)),
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: content,
+                  style: TextStyle(
+                    fontSize: ScreenUtil().setSp(31),
+                    letterSpacing: 1.5,
+                    height:1.5,
+                    textBaseline: TextBaseline.ideographic
+                  ),
+                ),
+              ],
+            ),
+            textAlign: TextAlign.justify,
+          ),
+        )
       ],
     );
   }
