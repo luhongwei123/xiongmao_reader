@@ -11,7 +11,7 @@ class PageUtils{
       Map info = listPages[i];
       list.add(article.substring(info['start'],info['end']));
     } 
-    novel.addAttr(list);
+    novel.addAttr(list); 
   }
 
   static List<Map<String, int>> pageNumber(String article){
