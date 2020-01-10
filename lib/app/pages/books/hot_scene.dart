@@ -21,8 +21,7 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
         new SliverList(
           delegate: new SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              //创建列表项      
-              // print('调用了第${index+1}次');
+              //创建列表项
               return _getCompnents(index);
             },
           ),

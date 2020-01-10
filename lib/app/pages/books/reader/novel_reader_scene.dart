@@ -4,6 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xiongmao_reader/app/components/http_request.dart';
 import 'package:xiongmao_reader/app/components/page_utils.dart';
 import 'package:xiongmao_reader/app/model/novel_model.dart';
+import 'package:xiongmao_reader/app/pages/books/reader/reader_menu_scene.dart';
+
+import 'battery_scene.dart';
 
 class NovelReaderScene extends StatefulWidget {
   final String artId;
@@ -19,6 +22,8 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
   Novel nextNovels;
   int pageIndex= 0;
 
+  bool isMenuVisiable = false;
+
   String title='';
   @override
   void initState() {
@@ -28,6 +33,7 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
       keepPage: true, //设置为true  initialPage才生效（默认true）
       viewportFraction: 1.0 //默认1，每个页面占可视窗的比例
     );
+    SystemChrome.setEnabledSystemUIOverlays([]);
     pageController.addListener(onScroll);
 
     setup(this.widget.artId);
@@ -129,16 +135,28 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
           scrollDirection: Axis.horizontal, //垂直切换还是水平切换（默认水平，Android原生ViewPage要费很大劲才能实现）
           reverse: false, //倒置，设置true页面顺序从后往前，默认false
           onPageChanged: (currentIndex) {
-            
                setState(() {
                  pageIndex = currentIndex;
                });
-               print("当前页:${currentIndex}");
           }, //onPageChanged 监听页面改变，输出当前页面序号
           controller: pageController,
           itemCount: itemCount, //数量
           itemBuilder: _pageItemAnimal, //展示具体的Widget
         );
+  }
+
+  previousPage() {
+    pageController.previousPage(duration: Duration(milliseconds: 250), curve: Curves.easeOut);
+  }
+
+  nextPage() {
+    pageController.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeOut);
+  }
+  hideMenu() {
+      SystemChrome.setEnabledSystemUIOverlays([]);
+      setState(() {
+        this.isMenuVisiable = false;
+      });
   }
   //定义一个 Stack  返回展示
   Widget _pageItemAnimal(BuildContext context, int index) {
@@ -159,33 +177,85 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
     if (content.startsWith('\n')) {
       content = content.substring(1);
     }
-    return Stack(
-      children: < Widget > [
-        Container(
-          margin: EdgeInsets.fromLTRB(ScreenUtil().setHeight(10), ScreenUtil().setHeight(30), 0, 0),
-          child: Text(title, style: TextStyle(fontSize: ScreenUtil().setSp(20)), ),
-        ),
-        Container(
-          color: Colors.transparent,
-          margin: EdgeInsets.fromLTRB(ScreenUtil().setHeight(20), ScreenUtil().setHeight(80), ScreenUtil().setHeight(20), ScreenUtil().setHeight(20)),
-          child: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: content,
-                  style: TextStyle(
-                    fontSize: ScreenUtil().setSp(31),
-                    letterSpacing: 1.5,
-                    height:1.5,
-                    textBaseline: TextBaseline.ideographic
+    return GestureDetector(
+      onTapUp: (TapUpDetails details){
+        Offset position = details.globalPosition;
+        double xRate = position.dx / ScreenUtil().setWidth(750.0-20-20);
+        if (xRate > 0.33 && xRate < 0.66) {
+          // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top, SystemUiOverlay.bottom]);
+           SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
+              statusBarColor: Color(0xFFF5F5F5),
+              statusBarBrightness:Brightness.light
+          );
+          SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+          
+          SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+          setState(() {
+            isMenuVisiable = true;
+          });
+        } else if (xRate >= 0.66) {
+          nextPage();
+        } else {
+          previousPage();
+        }
+      },
+      child: Stack(
+        children: < Widget > [
+          Container(
+            margin: EdgeInsets.fromLTRB(ScreenUtil().setHeight(10), ScreenUtil().setHeight(30), 0, 0),
+            child: Text(title, style: TextStyle(fontSize: ScreenUtil().setSp(20)), ),
+          ),
+          Container(
+            color: Colors.transparent,
+            margin: EdgeInsets.fromLTRB(ScreenUtil().setHeight(20), ScreenUtil().setHeight(80), ScreenUtil().setHeight(20), ScreenUtil().setHeight(20)),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: content,
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(31),
+                      letterSpacing: 1.5,
+                      height:1.5,
+                      textBaseline: TextBaseline.ideographic
+                    ),
                   ),
+                ],
+              ),
+              textAlign: TextAlign.justify,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(20), 0, ScreenUtil().setWidth(10), ScreenUtil().setWidth(10)),
+            alignment: Alignment.bottomLeft,
+            child: Row(
+              children: <Widget>[
+                BatteryView(),
+                Expanded(
+                  child:Text('第${page + 1}/${currentNovels.pageCount}页', 
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(18), 
+                      color: Color(0xff8B7961),
+                    ),
+                    textDirection: TextDirection.rtl,
+                  ) 
                 ),
               ],
             ),
-            textAlign: TextAlign.justify,
           ),
-        )
-      ],
+          buildMenu(),
+        ],
+      ),
+    );
+  }
+
+  buildMenu() {
+    if (!isMenuVisiable) {
+      return Container();
+    }
+    
+    return ReaderMenuScene(
+      onTap: hideMenu,
     );
   }
 }
