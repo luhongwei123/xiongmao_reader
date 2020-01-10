@@ -10,8 +10,8 @@ class PageUtils{
     for(int i = 0; i < listPages.length;i++){
       Map info = listPages[i];
       list.add(article.substring(info['start'],info['end']));
-    } 
-    novel.addAttr(list); 
+    }
+    novel.addAttr(list);
   }
 
   static List<Map<String, int>> pageNumber(String article){
