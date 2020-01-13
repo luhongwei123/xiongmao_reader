@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'app_color.dart';
+
 class TextSearcher extends StatelessWidget implements PreferredSizeWidget {
   @override Widget build(BuildContext context) {
     return ClipRRect(
@@ -13,20 +15,21 @@ class TextSearcher extends StatelessWidget implements PreferredSizeWidget {
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.done,
           maxLines: 1,
+          enabled: false,
           style: TextStyle(
             fontSize: ScreenUtil().setHeight(300)
           ),
           decoration: InputDecoration(
-            hintText: '请输入内容',
+            hintText: '重生之后。。。',
             hintStyle: TextStyle(
-              color: Colors.amber,
+              color: AppColor.darkGray,
               fontSize: ScreenUtil().setSp(25),
             ),
             prefixIcon: Icon(
               Icons.search,
-              color: Colors.amber
+              color: AppColor.red
             ),
-            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 14),
+            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, ScreenUtil().setWidth(28)),
             filled: true,
             fillColor: Colors.grey[10],
             border: InputBorder.none

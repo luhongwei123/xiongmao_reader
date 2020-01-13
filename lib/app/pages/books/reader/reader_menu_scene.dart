@@ -38,7 +38,7 @@ class _ReaderMenuSceneState extends State<ReaderMenuScene> with SingleTickerProv
             child: Container(color: Colors.transparent),
           ),
           buildTopView(context),
-          // buildBottomView(),
+          buildBottomView(),
         ],
       ),
     );
@@ -74,6 +74,54 @@ class _ReaderMenuSceneState extends State<ReaderMenuScene> with SingleTickerProv
             ),
           ],
         ),
+      ),
+    );
+  }
+
+   buildBottomView() {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Column(
+        children: <Widget>[
+          // buildProgressTipView(),
+          Container(
+            decoration: BoxDecoration(color: Color(0xFFF5F5F5)),
+            padding: EdgeInsets.only(bottom: ScreenUtil.bottomBarHeight),
+            child: Column(
+              children: <Widget>[
+                // buildProgressView(),
+                buildBottomMenus(),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  buildBottomMenus() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        buildBottomItem('目录', 'asset/readers/read_icon_catalog.png'),
+        buildBottomItem('亮度', 'asset/readers/read_icon_brightness.png'),
+        buildBottomItem('字体', 'asset/readers/read_icon_font.png'),
+        buildBottomItem('设置', 'asset/readers/read_icon_setting.png'),
+      ],
+    );
+  }
+
+  buildBottomItem(String title, String icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 7),
+      child: Column(
+        children: <Widget>[
+          Image.asset(icon),
+          SizedBox(height: 5),
+          Text(title, style: TextStyle(fontSize: 12, color: Color(0xFF333333))),
+        ],
       ),
     );
   }

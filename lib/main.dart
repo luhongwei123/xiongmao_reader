@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'app/home/home_scene.dart';
+import 'package:xiongmao_reader/app/home/app_scene.dart';
 
 void main(){
-  runApp(MyApp());
+  runApp(AppScene());
   if (Platform.isAndroid) {
       SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
@@ -14,23 +13,6 @@ void main(){
       );
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     }
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      // title: 'UI Kit',
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.amber,
-      ),
-      home: HomeScene(),
-    );
-    
-  }
 }
 
 

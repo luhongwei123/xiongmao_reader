@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:xiongmao_reader/app/components/app_color.dart';
 import 'package:xiongmao_reader/app/components/app_searcher.dart';
 import 'package:xiongmao_reader/app/pages/books/boy_scene.dart';
 import 'package:xiongmao_reader/app/pages/books/girl_scene.dart';
@@ -55,7 +56,7 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
             indicatorSize: TabBarIndicatorSize.tab,
             indicatorPadding: EdgeInsets.zero,
             // labelPadding: EdgeInsets.only(left: 20),
-            labelColor: Colors.amber,
+            labelColor: AppColor.red,
             labelStyle: TextStyle(
               fontSize: ScreenUtil().setSp(40),
             ),
@@ -91,7 +92,32 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
         backgroundColor: Colors.white,
         brightness: Brightness.light,
         pinned: false, //不固定在顶部
-        title: new TextSearcher(),
+        title: Row(
+          children: < Widget > [
+            new TextSearcher(),
+            Container(
+              padding: EdgeInsets.only(left: ScreenUtil().setWidth(20), right: ScreenUtil().setWidth(20)),
+              child: InkWell(
+                child: Row(
+                  children: < Widget > [
+                    Image.asset('asset/icon/kind.png',
+                      height: ScreenUtil().setHeight(40),
+                      width: ScreenUtil().setWidth(40),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: ScreenUtil().setWidth(20)),
+                      child: Text('分类', style: TextStyle(
+                        color: AppColor.red,
+                        fontSize: ScreenUtil().setSp(24)
+                        ), 
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       )
     ];
   }

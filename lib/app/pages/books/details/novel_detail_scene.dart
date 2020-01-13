@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:xiongmao_reader/app/components/app_color.dart';
 import 'package:xiongmao_reader/app/components/app_navigator.dart';
 
 class NovelDetailScene extends StatefulWidget {
@@ -84,9 +85,8 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
     );
   }
   Widget _buildCard() {
-    return Card(
+    return Container(
       color: Colors.white,
-      elevation: 1,
       child: Column(
         children: < Widget > [
           Row(
@@ -187,9 +187,11 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
           onTap: () {
             Navigator.pop(context);
           },
-          child: Icon(Icons.keyboard_arrow_left),
+          child: Icon(Icons.keyboard_arrow_left,color: AppColor.darkGray,),
         ),
-        title: Text(title),
+        title: Text(title,style: TextStyle(
+          color: AppColor.darkGray
+        ),),
         centerTitle: true,
         flexibleSpace: FlexibleSpaceBar(
           background: Row(
@@ -208,6 +210,7 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
                       textAlign: TextAlign.left, //文本对齐方式  居中
                       textDirection: TextDirection.ltr, //
                       style: TextStyle(
+                        color: AppColor.darkGray,
                         fontSize: ScreenUtil().setSp(40)
                       ),
                     ),

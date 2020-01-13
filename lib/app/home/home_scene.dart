@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:xiongmao_reader/app/components/app_color.dart';
 import 'package:xiongmao_reader/app/pages/book_scene.dart';
 import 'package:xiongmao_reader/app/pages/mine_scene.dart';
 import 'package:xiongmao_reader/app/pages/recommend_scene.dart';
@@ -13,6 +14,19 @@ class HomeScene extends StatefulWidget {
 }
 
 class _HomeSceneState extends State < HomeScene > {
+  List<Image> _tabImages = [
+    Image.asset('asset/icon/tuijian-u.png'),
+    Image.asset('asset/icon/book-u.png'),
+    Image.asset('asset/icon/video-u.png'),
+    Image.asset('asset/icon/me-u.png'),
+  ];
+  List<Image> _tabSelectedImages = [
+    Image.asset('asset/icon/tuijian-s.png'),
+    Image.asset('asset/icon/book-s.png'),
+    Image.asset('asset/icon/video-s.png'),
+    Image.asset('asset/icon/me-s.png'),
+  ];
+
   List < Widget > _widgetList = [
     //推荐页面
     RecommendScene(),
@@ -40,24 +54,16 @@ class _HomeSceneState extends State < HomeScene > {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.home,
-            ),
+            icon: getTabIcon(0),
             title: Text('推荐', style: TextStyle())),
           BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.book,
-            ),
+            icon: getTabIcon(1),
             title: Text('书城', style: TextStyle())),
           BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.video_camera,
-            ),
+            icon: getTabIcon(2),
             title: Text('视频', style: TextStyle())),
           BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.person,
-            ),
+            icon: getTabIcon(3),
             title: Text(
               '我的',
               style: TextStyle(),
@@ -67,85 +73,95 @@ class _HomeSceneState extends State < HomeScene > {
       body: _widgetList[_index],
     );
   }
+
+  Image getTabIcon(int index) {
+    if (index == _index) {
+      return _tabSelectedImages[index];
+    } else {
+      return _tabImages[index];
+    }
+  }
+
+  //appbar
+  Widget _buildAppBar(int index) {
+    var appbar;
+      switch (index) {
+        case 0:
+          appbar = new AppBar(
+            elevation: 0,
+            title: new Text("精选推荐",style: new TextStyle(color: Colors.white)),
+            iconTheme: new IconThemeData(color: Colors.white),
+            // backgroundColor: Colors.amber,
+            backgroundColor: AppColor.red,
+            brightness: Brightness.dark,
+            actions: [
+              IconButton(
+                padding:EdgeInsets.all(0),
+                icon: Icon(CupertinoIcons.search),
+                iconSize: 24,
+                onPressed: () => {},
+                splashColor: Colors.transparent,
+                highlightColor:Colors.transparent
+              ),
+              IconButton(
+                padding:EdgeInsets.all(4),
+                icon: Icon(CupertinoIcons.time),
+                iconSize: 24,
+                onPressed: () => {},
+                splashColor: Colors.transparent,
+                highlightColor:Colors.transparent
+              ),
+              IconButton(
+                padding:EdgeInsets.all(0),
+                icon: Icon(CupertinoIcons.ellipsis),
+                iconSize: 24,
+                onPressed: () => {},
+                splashColor: Colors.transparent,
+                highlightColor:Colors.transparent
+              ),
+            ],
+          );
+          break;
+        // case 1:
+        //   appbar = new AppBar(
+        //     elevation: 0.0,
+        //     backgroundColor: Colors.white,
+        //     brightness: Brightness.light,
+        //     title: TabBar(
+        //       controller: controller, //可以和TabBarView使用同一个TabController
+        //       tabs: tabs,
+        //       isScrollable: true,
+        //       indicator: UnderlineTabIndicator(
+        //         borderSide: BorderSide(width: 0.0, color: Colors.white),
+        //         insets: EdgeInsets.zero,
+        //       ),
+        //       indicatorWeight: 0.01,
+        //       indicatorSize: TabBarIndicatorSize.tab,
+        //       indicatorPadding: EdgeInsets.zero,
+        //       labelPadding: EdgeInsets.only(left: 20),
+        //       labelColor: Colors.pinkAccent,
+        //       labelStyle: TextStyle(
+        //         fontSize: 25.0,
+        //       ),
+        //       unselectedLabelColor: Colors.black38,
+        //       unselectedLabelStyle: TextStyle(
+        //         fontSize: 18.0,
+        //       ),
+        //     ),
+        //   );
+        //   break;
+        // case 2:
+        //   appbar = new SearchAppBarWidget(
+        //     focusNode: FocusNode(),
+        //     controller: new TextEditingController(),
+        //     elevation: 2.0,
+        //     inputFormatters: [
+        //       LengthLimitingTextInputFormatter(50),
+        //     ],
+        //     onEditingComplete: () => {});
+        //   break;
+      }
+      return appbar;
+}
 }
 
-//appbar
-Widget _buildAppBar(int index) {
-  var appbar;
-    switch (index) {
-      case 0:
-        appbar = new AppBar(
-          elevation: 0,
-          title: new Text("熊猫书城",style: new TextStyle(color: Colors.white)),
-          iconTheme: new IconThemeData(color: Colors.white),
-          backgroundColor: Colors.amber,
-          brightness: Brightness.dark,
-          actions: [
-            IconButton(
-              padding:EdgeInsets.all(0),
-              icon: Icon(CupertinoIcons.search),
-              iconSize: 24,
-              onPressed: () => {},
-              splashColor: Colors.transparent,
-              highlightColor:Colors.transparent
-            ),
-            IconButton(
-              padding:EdgeInsets.all(4),
-              icon: Icon(CupertinoIcons.time),
-              iconSize: 24,
-              onPressed: () => {},
-              splashColor: Colors.transparent,
-              highlightColor:Colors.transparent
-            ),
-            IconButton(
-              padding:EdgeInsets.all(0),
-              icon: Icon(CupertinoIcons.ellipsis),
-              iconSize: 24,
-              onPressed: () => {},
-              splashColor: Colors.transparent,
-              highlightColor:Colors.transparent
-            ),
-          ],
-        );
-        break;
-      // case 1:
-      //   appbar = new AppBar(
-      //     elevation: 0.0,
-      //     backgroundColor: Colors.white,
-      //     brightness: Brightness.light,
-      //     title: TabBar(
-      //       controller: controller, //可以和TabBarView使用同一个TabController
-      //       tabs: tabs,
-      //       isScrollable: true,
-      //       indicator: UnderlineTabIndicator(
-      //         borderSide: BorderSide(width: 0.0, color: Colors.white),
-      //         insets: EdgeInsets.zero,
-      //       ),
-      //       indicatorWeight: 0.01,
-      //       indicatorSize: TabBarIndicatorSize.tab,
-      //       indicatorPadding: EdgeInsets.zero,
-      //       labelPadding: EdgeInsets.only(left: 20),
-      //       labelColor: Colors.pinkAccent,
-      //       labelStyle: TextStyle(
-      //         fontSize: 25.0,
-      //       ),
-      //       unselectedLabelColor: Colors.black38,
-      //       unselectedLabelStyle: TextStyle(
-      //         fontSize: 18.0,
-      //       ),
-      //     ),
-      //   );
-      //   break;
-      // case 2:
-      //   appbar = new SearchAppBarWidget(
-      //     focusNode: FocusNode(),
-      //     controller: new TextEditingController(),
-      //     elevation: 2.0,
-      //     inputFormatters: [
-      //       LengthLimitingTextInputFormatter(50),
-      //     ],
-      //     onEditingComplete: () => {});
-      //   break;
-    }
-    return appbar;
-}
