@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'home_scene.dart';
+import 'package:xiongmao_reader/app/home/home_scene.dart';
 
 
 class AppScene extends StatelessWidget {

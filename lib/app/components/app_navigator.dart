@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:xiongmao_reader/app/home/home_scene.dart';
 import 'package:xiongmao_reader/app/pages/books/details/novel_detail_scene.dart';
 import 'package:xiongmao_reader/app/pages/books/details/novel_titles_scene.dart';
 import 'package:xiongmao_reader/app/pages/books/reader/novel_reader_scene.dart';
@@ -12,6 +13,9 @@ class AppNavigator {
         builder: (BuildContext context) => scene,
       ),
     );
+  }
+  static toHome(BuildContext context){
+    AppNavigator.push(context, HomeScene());
   }
   /*
    * 跳转到小说详情页面

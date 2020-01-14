@@ -93,7 +93,7 @@ class _HomeSceneState extends State < HomeScene > {
             iconTheme: new IconThemeData(color: Colors.white),
             // backgroundColor: Colors.amber,
             backgroundColor: AppColor.red,
-            brightness: Brightness.dark,
+            brightness: Brightness.light,
             actions: [
               IconButton(
                 padding:EdgeInsets.all(0),

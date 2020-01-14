@@ -62,7 +62,9 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
         elevation: 0.0,
         backgroundColor: Colors.white,
         brightness: Brightness.light,
-        title: TabBar(
+        title: Container(
+          padding: EdgeInsets.only(left: 0),
+          child:TabBar(
           controller: controller, //可以和TabBarView使用同一个TabController
           tabs: tabs,
           isScrollable: true,
@@ -73,7 +75,7 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
           indicatorWeight: 0.001,
           indicatorSize: TabBarIndicatorSize.tab,
           indicatorPadding: EdgeInsets.zero,
-          // labelPadding: EdgeInsets.only(bottom: 20),
+          labelPadding: EdgeInsets.only(left: 20),
           labelColor: AppColor.red,
           labelStyle: TextStyle(
             fontSize: ScreenUtil().setSp(40),
@@ -83,6 +85,7 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
             fontSize: ScreenUtil().setSp(28),
           ),
         ),
+      ),
       ),
       preferredSize: Size.fromHeight(20),
     );
