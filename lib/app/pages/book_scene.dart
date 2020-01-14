@@ -40,34 +40,7 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(child: new AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.white,
-          brightness: Brightness.light,
-          title: TabBar(
-            controller: controller, //可以和TabBarView使用同一个TabController
-            tabs: tabs,
-            isScrollable: true,
-            indicator: UnderlineTabIndicator(
-              borderSide: BorderSide(width: 0.0, color: Colors.white),
-              insets: EdgeInsets.zero,
-            ),
-            indicatorWeight: 0.001,
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicatorPadding: EdgeInsets.zero,
-            // labelPadding: EdgeInsets.only(left: 20),
-            labelColor: AppColor.red,
-            labelStyle: TextStyle(
-              fontSize: ScreenUtil().setSp(40),
-            ),
-            unselectedLabelColor: Colors.black38,
-            unselectedLabelStyle: TextStyle(
-              fontSize: ScreenUtil().setSp(28),
-            ),
-          ),
-        ),
-        preferredSize: Size.fromHeight(20),
-      ),
+      appBar: _appBarBuilder(),
       body: NestedScrollView(
         headerSliverBuilder: _sliverBuilder,
         body: TabBarView(
@@ -83,6 +56,37 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
     );
   }
 
+  Widget _appBarBuilder() {
+    return PreferredSize(
+      child: new AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        brightness: Brightness.light,
+        title: TabBar(
+          controller: controller, //可以和TabBarView使用同一个TabController
+          tabs: tabs,
+          isScrollable: true,
+          indicator: UnderlineTabIndicator(
+            borderSide: BorderSide(width: 0.0, color: Colors.white),
+            insets: EdgeInsets.zero,
+          ),
+          indicatorWeight: 0.001,
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicatorPadding: EdgeInsets.zero,
+          // labelPadding: EdgeInsets.only(bottom: 20),
+          labelColor: AppColor.red,
+          labelStyle: TextStyle(
+            fontSize: ScreenUtil().setSp(40),
+          ),
+          unselectedLabelColor: Colors.black38,
+          unselectedLabelStyle: TextStyle(
+            fontSize: ScreenUtil().setSp(28),
+          ),
+        ),
+      ),
+      preferredSize: Size.fromHeight(20),
+    );
+  }
   List < Widget > _sliverBuilder(BuildContext context, bool innerBoxIsScrolled) {
     return <Widget > [
       SliverAppBar(
@@ -109,8 +113,7 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
                       child: Text('分类', style: TextStyle(
                         color: AppColor.red,
                         fontSize: ScreenUtil().setSp(24)
-                        ), 
-                      ),
+                      ), ),
                     ),
                   ],
                 ),

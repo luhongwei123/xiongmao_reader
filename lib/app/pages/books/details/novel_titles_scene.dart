@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:xiongmao_reader/app/components/app_color.dart';
 import 'package:xiongmao_reader/app/components/app_navigator.dart';
 
 class NovelTitlesScene extends StatefulWidget {
@@ -14,14 +16,15 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         leading: InkWell(
-          splashColor: Colors.white,
           onTap: () {
             Navigator.pop(context);
           },
-          child: Icon(IconData(0xe314, fontFamily: 'MaterialIcons'), ),
+          child: Icon(IconData(0xe314, fontFamily: 'MaterialIcons'), color: AppColor.darkGray,),
         ),
-        title: Text('三寸人间'),
+        centerTitle: true,
+        title: Text('三寸人间',style: TextStyle(color: AppColor.darkGray),),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -38,7 +41,10 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > {
               child: ListView.separated(
                 shrinkWrap:true,
                 itemBuilder: (BuildContext context, int index) {
-                  return new Text("${index+1}.第测试${index+1}章");
+                  return new Container(
+                    padding: EdgeInsets.only(left: ScreenUtil().setWidth(40)),
+                    child: Text("${index+1}.第测试${index+1}章"),
+                  );
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return Divider();

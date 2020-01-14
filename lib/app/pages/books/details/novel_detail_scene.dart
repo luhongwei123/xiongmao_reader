@@ -199,10 +199,10 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
               Container(
                 padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(100), 0, 0, ScreenUtil().setWidth(20)),
                 alignment: Alignment.bottomLeft,
-                child: Image.asset('asset/books/1.jpg', width: ScreenUtil().setWidth(130), height: ScreenUtil().setHeight(180), ),
+                child: Image.asset('asset/books/1.jpg', width: ScreenUtil().setWidth(250), height: ScreenUtil().setHeight(180), ),
               ),
               Container(
-                padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(20), ScreenUtil().setWidth(120), ScreenUtil().setWidth(10), ScreenUtil().setWidth(20)),
+                padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(20), ScreenUtil().setWidth(200), ScreenUtil().setWidth(10), ScreenUtil().setWidth(20)),
                 alignment: Alignment.bottomRight,
                 child: Column(
                   children: < Widget > [
@@ -231,5 +231,3 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
     ];
   }
 }
-
-class _buildNavigator {}

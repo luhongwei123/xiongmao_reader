@@ -15,8 +15,8 @@ class PageUtils{
   }
 
   static List<Map<String, int>> pageNumber(String article){
-    var contentHeight = ScreenUtil().setHeight(1334 - 60  - 20.0);
-    var contentWidth = ScreenUtil().setWidth(750.0-20-20);
+    var contentHeight = ScreenUtil().setHeight(1334);
+    var contentWidth = ScreenUtil().setWidth(750.0);
     String tempStr = article;
     List<Map<String, int>> pageConfig = [];
     int last = 0;
@@ -24,7 +24,7 @@ class PageUtils{
       Map<String, int> offset = {};
       offset['start'] = last;
       TextPainter textPainter = TextPainter(textDirection: TextDirection.ltr);
-      textPainter.text = TextSpan(text: tempStr, style: TextStyle(fontSize: ScreenUtil().setSp(35)));
+      textPainter.text = TextSpan(text: tempStr, style: TextStyle(fontSize: ScreenUtil().setSp(40)));
       textPainter.layout(maxWidth: contentWidth);
       var end = textPainter.getPositionForOffset(Offset(contentWidth, contentHeight)).offset;
 

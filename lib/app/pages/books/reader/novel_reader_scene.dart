@@ -158,6 +158,17 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
         this.isMenuVisiable = false;
       });
   }
+  @override
+  void dispose(){
+    super.dispose();
+     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarBrightness:Brightness.light
+      );
+      SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+      
+      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  }
   //定义一个 Stack  返回展示
   Widget _pageItemAnimal(BuildContext context, int index) {
     var page = index - (preNovels != null ? preNovels.pageCount : 0);
@@ -214,7 +225,7 @@ class _NovelReaderSceneState extends State < NovelReaderScene > {
                   TextSpan(
                     text: content,
                     style: TextStyle(
-                      fontSize: ScreenUtil().setSp(31),
+                      fontSize: ScreenUtil().setSp(40),
                       letterSpacing: 1.5,
                       height:1.5,
                       textBaseline: TextBaseline.ideographic
