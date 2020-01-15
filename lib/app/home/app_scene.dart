@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:xiongmao_reader/app/home/home_scene.dart';
+
+import '../../splash.dart';
 
 
 class AppScene extends StatelessWidget {
@@ -12,7 +13,7 @@ class AppScene extends StatelessWidget {
         brightness: Brightness.light,
         primarySwatch: Colors.red,
       ),
-      home: HomeScene(),
+      home: SplashPage(),
     );
   }
 }

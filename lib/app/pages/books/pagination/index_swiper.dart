@@ -1,14 +1,16 @@
 import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:xiongmao_reader/app/components/toast_utils.dart';
 
 
 
 class IndexSwiper extends StatefulWidget {
+  final List imageUrls;
+  IndexSwiper({this.imageUrls});
   @override
   _IndexSwiperState createState() => _IndexSwiperState();
 }
-
 class _IndexSwiperState extends State < IndexSwiper > {
   @override
   Widget build(BuildContext context) {
@@ -29,15 +31,24 @@ class _IndexSwiperState extends State < IndexSwiper > {
             indicatorAlignment: AlignmentDirectional.bottomEnd,
             speed: 400,
             indicator: CircleSwiperIndicator(),
-            children: < Widget > [
-              Image.asset("asset/sea.png", fit: BoxFit.fill, ),
-              Image.asset("asset/star.jpg", fit: BoxFit.fill),
-              Image.asset("asset/road.jpg", fit: BoxFit.fill, ),
-              Image.asset("asset/star.jpg", fit: BoxFit.fill, ),
-            ],
+            children: _buildSwiper()
+            ),
           ),
         ),
-      ),
     );
+  }
+  List<Widget> _buildSwiper(){
+    List<Widget> list = [];
+    this.widget.imageUrls.forEach((item){
+      var image = InkWell(
+        //如果是网络图片 推荐使用CachedNetworkImage
+        child: Image.asset(item["url"], fit: BoxFit.fill, ),
+        onTap: (){
+          Toast.show(item["url"]);
+        },
+      );
+      list.add(image);
+    });
+    return list;
   }
 }

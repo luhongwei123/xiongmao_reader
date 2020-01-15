@@ -10,10 +10,21 @@ class HotBookScene extends StatefulWidget {
 }
 
 class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClientMixin {
-
+  Map resp = {};
   @override
   bool get wantKeepAlive => true;
-
+  @override
+  void initState() {
+    super.initState();
+    resp['imageUrls'] = [
+      {"url":"asset/sea.png","text":"sea.png"},
+      {"url":"asset/star.jpg","text":"star.jpg"},
+      {"url":"asset/road.jpg","text":"road.jpg"},
+      {"url":"asset/star.jpg","text":"star.jpg"}
+    ];
+    setState(() {});
+    print("轮播图片地址是:${resp['imageUrls']}");
+  }
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -34,7 +45,7 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
     var widget;
     switch (index) {
       case 0:
-        widget = IndexSwiper();
+        widget = IndexSwiper(imageUrls: resp['imageUrls'],);
         break;
       case 1:
         widget = NavigatorScene();
