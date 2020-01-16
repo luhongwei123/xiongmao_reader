@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:xiongmao_reader/app/components/toast_utils.dart';
 
 class NavigatorScene extends StatelessWidget {
+
+  final List navigators;
+  NavigatorScene({this.navigators});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -12,54 +17,26 @@ class NavigatorScene extends StatelessWidget {
         physics: new NeverScrollableScrollPhysics(), //增加
         shrinkWrap: true, //增加
         padding: EdgeInsets.all(3),
-        children: < Widget > [
-          InkWell(
-            onTap: () {},
-            child: Column(
-              children: < Widget > [
-                Image.asset('asset/icon/kinds.png', width: ScreenUtil().setWidth(80)),
-                Text('分类'),
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () {},
-            child: Column(
-              children: < Widget > [
-                Image.asset('asset/icon/ranking.png', width: ScreenUtil().setWidth(80)),
-                Text('排行'),
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () {},
-            child: Column(
-              children: < Widget > [
-                Image.asset('asset/icon/books.png', width: ScreenUtil().setWidth(80)),
-                Text('书单'),
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () {},
-            child: Column(
-              children: < Widget > [
-                Image.asset('asset/icon/articles.png', width: ScreenUtil().setWidth(80)),
-                Text('网文'),
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () {},
-            child: Column(
-              children: < Widget > [
-                Image.asset('asset/icon/shares.png', width: ScreenUtil().setWidth(80)),
-                Text('书友分享'),
-              ],
-            ),
-          )
-        ],
+        children: _buildNavigator(),
       ),
     );
+  }
+  List<Widget> _buildNavigator(){
+    List<Widget> list = [];
+    navigators.forEach((item){
+      var widget = InkWell(
+            onTap: () {
+              Toast.show(item['title']);
+            },
+            child: Column(
+              children: < Widget > [
+                Image.asset(item['url'], width: ScreenUtil().setWidth(80)),
+                Text(item['title']),
+              ],
+            ),
+          );
+        list.add(widget);
+    });
+    return list;
   }
 }

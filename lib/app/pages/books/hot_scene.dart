@@ -16,14 +16,23 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
   @override
   void initState() {
     super.initState();
-    resp['imageUrls'] = [
+    Map hot = {};
+    hot['imageUrls'] = [
       {"url":"asset/sea.png","text":"sea.png"},
       {"url":"asset/star.jpg","text":"star.jpg"},
       {"url":"asset/road.jpg","text":"road.jpg"},
       {"url":"asset/star.jpg","text":"star.jpg"}
     ];
+    hot['navigaors'] = [
+      {"url":"asset/icon/kinds.png","title":"分类"},
+      {"url":"asset/icon/ranking.png","title":"排行"},
+      {"url":"asset/icon/books.png","title":"书单"},
+      {"url":"asset/icon/articles.png","title":"网文"},
+      {"url":"asset/icon/shares.png","title":"书友分享"}
+    ];
+    hot['title'] = ["一周热门书籍推荐","畅销精选"]; 
+    resp["hot"] = hot;
     setState(() {});
-    print("轮播图片地址是:${resp['imageUrls']}");
   }
   @override
   Widget build(BuildContext context) {
@@ -45,19 +54,19 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
     var widget;
     switch (index) {
       case 0:
-        widget = IndexSwiper(imageUrls: resp['imageUrls'],);
+        widget = IndexSwiper(imageUrls: resp['hot']['imageUrls'],);
         break;
       case 1:
-        widget = NavigatorScene();
+        widget = NavigatorScene(navigators: resp['hot']['navigaors'],);
         break;
       case 2:
-        widget = FloorTitle(title: '一周热门书籍推荐');
+        widget = FloorTitle(title: resp['hot']['title'][0]);
         break;
       case 3:
         widget = WeeksRecommends();
         break;
       case 4:
-        widget = FloorTitle(title: '畅销精选');
+        widget = FloorTitle(title: resp['hot']['title'][1]);
         break;
       case 5:
         // widget = Navigator();
