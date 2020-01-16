@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:xiongmao_reader/app/components/app_color.dart';
-import 'package:xiongmao_reader/app/components/app_navigator.dart';
 import 'package:xiongmao_reader/app/home/home_scene.dart';
 
 class SplashPage extends StatefulWidget {
