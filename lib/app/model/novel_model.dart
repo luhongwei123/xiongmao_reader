@@ -4,10 +4,8 @@ class Novel {
   String title;
   String nextArticleId;
   String preArticleId;
-  List contentAttr;
-  addAttr(List str){
-    contentAttr = str;
-  }
+  String contentAttr;
+  
   int get pageCount{
     return contentAttr.length;
   }
@@ -20,5 +18,6 @@ class Novel {
     title = data['title'];
     nextArticleId = data['next_id'];
     preArticleId = data['prev_id'];
+    contentAttr = data['content'];
   }
 }

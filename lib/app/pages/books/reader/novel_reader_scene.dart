@@ -1,273 +1,525 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:xiongmao_reader/app/components/app_color.dart';
 import 'package:xiongmao_reader/app/components/http_request.dart';
-import 'package:xiongmao_reader/app/components/page_utils.dart';
+import 'package:xiongmao_reader/app/components/load_view.dart';
 import 'package:xiongmao_reader/app/model/novel_model.dart';
-import 'package:xiongmao_reader/app/pages/books/reader/reader_menu_scene.dart';
-
-import 'battery_scene.dart';
-
 class NovelReaderScene extends StatefulWidget {
-  final String artId;
-  NovelReaderScene({this.artId});
+  bool _isReversed; //是否倒序排列
+
+  double _initOffset = 0;
+  NovelReaderScene(this._isReversed, this._initOffset);
   @override
   _NovelReaderSceneState createState() => _NovelReaderSceneState();
 }
 
-class _NovelReaderSceneState extends State < NovelReaderScene > {
-  PageController pageController; 
-  Novel preNovels;
-  Novel currentNovels;
-  Novel nextNovels;
-  int pageIndex= 0;
+class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloadListener {
 
+  bool _isNighttime = false; // 夜间模式
+  LoadStatus _loadStatus = LoadStatus.SUCCESS;
+  ScrollController _controller;
+  String _title = "";
+  double _textSizeValue = 18;
+  String _content = "dssdssf";
+  double _spaceValue = 1.8;
   bool isMenuVisiable = false;
+  double _offset = 0;
+  static final double _sImagePadding = ScreenUtil().setWidth(40);
+  int _duration = 200;
+  @override
+  void dispose() {
+    super.dispose();
+    SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light
+    );
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  }
 
-  String title='';
   @override
   void initState() {
     super.initState();
-    pageController = PageController(
-      initialPage: 0, //默认显示第几个页面（默认0）
-      keepPage: true, //设置为true  initialPage才生效（默认true）
-      viewportFraction: 1.0 //默认1，每个页面占可视窗的比例
+    SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
+      statusBarColor: _isNighttime ? Color(0xFF333333) : Colors.transparent,
+      statusBarBrightness: _isNighttime ? Brightness.dark : Brightness.light
     );
-    SystemChrome.setEnabledSystemUIOverlays([]);
-    pageController.addListener(onScroll);
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
 
-    setup(this.widget.artId);
-  }
-  setup(String articleId) async{
-    currentNovels = await fetchArticle(articleId);
-    title = currentNovels.title;
-    if (currentNovels.preArticleId != null) {
-      preNovels = await fetchArticle(currentNovels.preArticleId);
-    } else {
-      preNovels = null;
-    }
-    if (currentNovels.nextArticleId != null) {
-      nextNovels = await fetchArticle(currentNovels.nextArticleId);
-    } else {
-      nextNovels = null;
-    }
-    setState(() {});
+
+    _spGetTextSizeValue().then((value) {
+      setState(() {
+        _textSizeValue = value;
+      });
+    });
+    _spGetSpaceValue().then((value) {
+      setState(() {
+        _spaceValue = value;
+      });
+    });
+
+    getData('0000');
   }
 
-  Future<Novel> fetchArticle(String articleId) async {
+  Future<double> _spGetSpaceValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var value = prefs.getDouble('spaceValue');
+    return value ?? 1.3;
+  }
+
+  Future<double> _spGetTextSizeValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var value = prefs.getDouble('textSizeValue');
+    return value ?? 18;
+  }
+  
+  void getData(articleId) async {
+    _controller = new ScrollController(
+      initialScrollOffset: this.widget._initOffset, keepScrollOffset: false);
+    _controller.addListener(() {
+      print("offset = ${_controller.offset}");
+      _offset = _controller.offset;
+    });
     var response = await Request.get(action: 'article$articleId');
-    if("err" == response){
+    if ("err" == response) {
       return null;
     }
-    String article = response['content'];
     Novel novel = Novel.fromJson(response);
-    // title = novel.title;
-    PageUtils.page(article, novel);
-    return novel;
+    setState(() {
+      _loadStatus = LoadStatus.SUCCESS;
+      ///部分小说文字排版有问题，需要特殊处理
+      _content = novel.contentAttr
+        .replaceAll("\t", "\n")
+        .replaceAll("\n\n\n\n", "\n\n");
+      _title = novel.title;
+    });
   }
 
-  fetchPreArticle(String articleId) async {
-   if (preNovels != null || articleId == null) {
-      return;
-    }
-    preNovels = await fetchArticle(articleId);
-    pageController.jumpToPage(preNovels.pageCount + pageIndex);
-    setState(() {});
-  }
-
-  fetchNextArticle(String articleId) async {
-    if (nextNovels != null ||  articleId == null) {
-      return;
-    }
-    nextNovels = await fetchArticle(articleId);
-    setState(() {});
-  }
-
-  onScroll() {
-    var page = pageController.offset / ScreenUtil().setWidth(750.0-20-20);
-    var nextArtilePage = currentNovels.pageCount + (preNovels != null ? preNovels.pageCount : 0);
-    if (page >= nextArtilePage) {
-      print("到达下章了，下章ID:${currentNovels.nextArticleId}");
-      preNovels = currentNovels;
-      currentNovels = nextNovels;
-      nextNovels = null;
-      title = currentNovels.title;
-      pageController.jumpToPage(preNovels.pageCount);
-      fetchNextArticle(currentNovels.nextArticleId);
-      setState(() {});
-    }
-    if (preNovels != null && page <= preNovels.pageCount) {
-      nextNovels = currentNovels;
-      currentNovels = preNovels;
-      preNovels = null;
-      title = currentNovels.title;
-      pageController.jumpToPage(pageIndex-1);
-      fetchPreArticle(currentNovels.preArticleId);
-      setState(() {});
-    }
-
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnnotatedRegion(
-        value: SystemUiOverlayStyle.dark,
-        child: Stack(
-          children: < Widget > [
-            Positioned(left: 0, top: 0, right: 0, bottom: 0, child: Image.asset('asset/readers/read_bg.png', fit: BoxFit.cover)),
-            buildPageView(),
-            // buildMenu(),
-          ],
-        ),
-      )
-    );
-  }
-  Widget buildPageView(){
-    int itemCount = currentNovels?.pageCount??0;
-    if(preNovels != null){
-        itemCount += preNovels?.pageCount??0 ;
-    }
-    if(nextNovels != null){
-      itemCount += nextNovels?.pageCount??0;
-    }
-    return PageView.builder(
-          pageSnapping: true, //默认true，即拖动不到一半弹回原页面;flase即，拖到哪里停在哪
-          scrollDirection: Axis.horizontal, //垂直切换还是水平切换（默认水平，Android原生ViewPage要费很大劲才能实现）
-          reverse: false, //倒置，设置true页面顺序从后往前，默认false
-          onPageChanged: (currentIndex) {
-               setState(() {
-                 pageIndex = currentIndex;
-               });
-          }, //onPageChanged 监听页面改变，输出当前页面序号
-          controller: pageController,
-          itemCount: itemCount, //数量
-          itemBuilder: _pageItemAnimal, //展示具体的Widget
-        );
-  }
-
-  previousPage() {
-    pageController.previousPage(duration: Duration(milliseconds: 250), curve: Curves.easeOut);
-  }
-
-  nextPage() {
-    pageController.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeOut);
-  }
-  hideMenu() {
-      SystemChrome.setEnabledSystemUIOverlays([]);
-      setState(() {
-        this.isMenuVisiable = false;
-      });
-  }
-  @override
-  void dispose(){
-    super.dispose();
-     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarBrightness:Brightness.light
-      );
-      SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-      
-      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-  }
-  //定义一个 Stack  返回展示
-  Widget _pageItemAnimal(BuildContext context, int index) {
-    var page = index - (preNovels != null ? preNovels.pageCount : 0);
-    var article;
-    if (page >= this.currentNovels.pageCount) {
-      // 到达下一章了
-      article = nextNovels;
-      page = 0;
-    } else if (page < 0) {
-      // 到达上一章了
-      article = preNovels;
-      page = preNovels.pageCount - 1;
-    } else {
-      article = this.currentNovels;
-    }
-    String content = article.getContent(page);
-    if (content.startsWith('\n')) {
-      content = content.substring(1);
-    }
-    return GestureDetector(
-      onTapUp: (TapUpDetails details){
-        Offset position = details.globalPosition;
-        double xRate = position.dx / ScreenUtil().setWidth(750.0-20-20);
-        if (xRate > 0.33 && xRate < 0.66) {
-          // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top, SystemUiOverlay.bottom]);
-           SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
-              statusBarColor: Color(0xFFF5F5F5),
-              statusBarBrightness:Brightness.light
-          );
-          SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-          
-          SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-          setState(() {
-            isMenuVisiable = true;
-          });
-        } else if (xRate >= 0.66) {
-          nextPage();
-        } else {
-          previousPage();
-        }
-      },
-      child: Stack(
+      backgroundColor: _isNighttime ? Colors.black : Colors.white,
+      body: Stack(
         children: < Widget > [
-          Container(
-            margin: EdgeInsets.fromLTRB(ScreenUtil().setHeight(10), ScreenUtil().setHeight(30), 0, 0),
-            child: Text(title, style: TextStyle(fontSize: ScreenUtil().setSp(20)), ),
-          ),
-          Container(
-            color: Colors.transparent,
-            margin: EdgeInsets.fromLTRB(ScreenUtil().setHeight(20), ScreenUtil().setHeight(80), ScreenUtil().setHeight(20), ScreenUtil().setHeight(20)),
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: content,
+          GestureDetector(
+            onTapUp: (TapUpDetails details) {
+              setState(() {
+                isMenuVisiable = !isMenuVisiable;
+              });
+            },
+            child: _loadStatus == LoadStatus.LOADING ?
+            LoadingView() :
+            _loadStatus == LoadStatus.FAILURE ?
+            FailureView(this) :
+            SingleChildScrollView(
+              controller: _controller,
+              padding: EdgeInsets.fromLTRB(
+                16,
+                30 + MediaQuery.of(context).padding.top,
+                9,
+                0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: < Widget > [
+                  Text(
+                    _title,
                     style: TextStyle(
-                      fontSize: ScreenUtil().setSp(40),
-                      letterSpacing: 1.5,
-                      height:1.5,
-                      textBaseline: TextBaseline.ideographic
+                      fontSize: _textSizeValue + 2,
+                      color: Color(0xFF9F8C54),
                     ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    _content,
+                    style: TextStyle(
+                      color: _isNighttime ?
+                      AppColor.contentColor :
+                      AppColor.black,
+                      fontSize: _textSizeValue,
+                      height: _spaceValue,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  /// 章节切换
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: < Widget > [
+                      MaterialButton(
+                        minWidth: 125,
+                        textColor: AppColor.textPrimaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(125)),
+                          side: BorderSide(
+                            color: AppColor.textPrimaryColor,
+                            width: 1),
+                        ),
+                        onPressed: () {
+                          // if (this.widget._isReversed) {
+                          //   if (this.widget._index >=
+                          //       _listBean.length - 1) {
+                          //     Fluttertoast.showToast(
+                          //         msg: "没有上一章了", fontSize: 14.0);
+                          //   } else {
+                          //     setState(() {
+                          //       _loadStatus = LoadStatus.LOADING;
+                          //     });
+                          //     this.widget._initOffset = 0;
+                          //     ++this.widget._index;
+                          //     this.widget._bookUrl =
+                          //         _listBean[this.widget._index].link;
+                          //     getData();
+                          //   }
+                          // } else {
+                          //   if (this.widget._index == 0) {
+                          //     Fluttertoast.showToast(
+                          //         msg: "没有上一章了", fontSize: 14.0);
+                          //   } else {
+                          //     setState(() {
+                          //       _loadStatus = LoadStatus.LOADING;
+                          //     });
+                          //     this.widget._initOffset = 0;
+                          //     --this.widget._index;
+                          //     this.widget._bookUrl =
+                          //         _listBean[this.widget._index].link;
+                          //     getData();
+                          //   }
+                          // }
+                        },
+                        child: Text("上一章"),
+                      ),
+                      MaterialButton(
+                        minWidth: 125,
+                        textColor: AppColor.textPrimaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(125)),
+                          side: BorderSide(
+                            color: AppColor.textPrimaryColor,
+                            width: 1),
+                        ),
+                        onPressed: () {
+                          // if (!this.widget._isReversed) {
+                          //   if (this.widget._index >=
+                          //       _listBean.length - 1) {
+                          //     Fluttertoast.showToast(
+                          //         msg: "没有下一章了", fontSize: 14.0);
+                          //   } else {
+                          //     setState(() {
+                          //       _loadStatus = LoadStatus.LOADING;
+                          //     });
+                          //     this.widget._initOffset = 0;
+                          //     ++this.widget._index;
+                          //     this.widget._bookUrl =
+                          //         _listBean[this.widget._index].link;
+                          //     getData();
+                          //   }
+                          // } else {
+                          //   if (this.widget._index == 0) {
+                          //     Fluttertoast.showToast(
+                          //         msg: "没有下一章了", fontSize: 14.0);
+                          //   } else {
+                          //     setState(() {
+                          //       _loadStatus = LoadStatus.LOADING;
+                          //     });
+                          //     _controller = ScrollController();
+                          //     this.widget._initOffset = 0;
+                          //     --this.widget._index;
+                          //     this.widget._bookUrl =
+                          //         _listBean[this.widget._index].link;
+                          //     getData();
+                          //   }
+                          // }
+                        },
+                        child: Text("下一章"),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 16,
                   ),
                 ],
               ),
-              textAlign: TextAlign.justify,
             ),
           ),
-          Container(
-            padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(20), 0, ScreenUtil().setWidth(10), ScreenUtil().setWidth(10)),
-            alignment: Alignment.bottomLeft,
-            child: Row(
-              children: <Widget>[
-                BatteryView(),
-                Expanded(
-                  child:Text('第${page + 1}/${currentNovels.pageCount}页', 
-                    style: TextStyle(
-                      fontSize: ScreenUtil().setSp(18), 
-                      color: Color(0xff8B7961),
-                    ),
-                    textDirection: TextDirection.rtl,
-                  ) 
-                ),
-              ],
+          // buildMenu(),
+          isMenuVisiable ? buildTopView(context) : Container(),
+          isMenuVisiable ? buildBottomView() : Container(),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: MediaQuery.of(context).padding.top,
+              color: _isNighttime ? Color(0xFF333333) : Color(0xFFF5F5F5),
             ),
-          ),
-          buildMenu(),
+          )
         ],
       ),
     );
   }
 
-  buildMenu() {
-    if (!isMenuVisiable) {
-      return Container();
-    }
-    
-    return ReaderMenuScene(
-      onTap: hideMenu,
+  @override
+  void onReload() {
+
+  }
+
+  hideMenu() {
+    setState(() {
+      this.isMenuVisiable = false;
+    });
+  }
+  buildTopView(BuildContext context) {
+    return Positioned(
+      top: MediaQueryData.fromWindow(window).padding.top,
+      left: 0,
+      right: 0,
+      child: Container(
+        decoration: BoxDecoration(color: _isNighttime ? Color(0xFF333333) : Color(0xFFF5F5F5)),
+        height: ScreenUtil().setHeight(80),
+        padding: EdgeInsets.fromLTRB(5, 10, 5, 0),
+        child: Row(
+          children: < Widget > [
+            Container(
+              width: 44,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset('asset/readers/pub_back_gray.png', color: _isNighttime ? Colors.white : Colors.black, ),
+              ),
+            ),
+            Expanded(child: Container()),
+            Container(
+              width: 44,
+              child: Image.asset('asset/readers/read_icon_voice.png', color: _isNighttime ? Colors.white : Colors.black),
+            ),
+            Container(
+              width: 44,
+              child: Image.asset('asset/readers/read_icon_more.png', color: _isNighttime ? Colors.white : Colors.black),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  buildBottomView() {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: < Widget > [
+          Container(
+            width: _sImagePadding * 2,
+            height: _sImagePadding * 2,
+            margin: EdgeInsets.fromLTRB(ScreenUtil().setWidth(20), 0, 0, 0),
+            child: AnimatedPadding(
+              duration: Duration(milliseconds: _duration),
+              padding: EdgeInsets.all(0),
+              child: InkWell(
+                splashColor: Colors.transparent,
+                onTap: () {
+                  setState(() {
+                    _isNighttime = !_isNighttime;
+                  });
+                },
+                child: Image.asset(
+                  _isNighttime ?
+                  "asset/readers/icon_content_daytime.png" :
+                  "asset/readers/icon_content_nighttime.png",
+                  height: 36,
+                  width: 36,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            color: _isNighttime ? Color(0xFF333333) : Color(0xFFF5F5F5),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: < Widget > [
+                Container(
+                  padding: EdgeInsets.only(left: ScreenUtil().setWidth(20)),
+                  child: Text(
+                    "字号",
+                    style: TextStyle(
+                      color: AppColor.contentColor,
+                      fontSize: ScreenUtil().setSp(28)),
+                  ),
+                ),
+                SizedBox(
+                  width: ScreenUtil().setWidth(20),
+                ),
+                Image.asset(
+                  "asset/readers/icon_content_font_small.png",
+                  color: _isNighttime ? AppColor.white : AppColor.darkGray,
+                  width: ScreenUtil().setWidth(60),
+                  height: ScreenUtil().setHeight(40),
+                ),
+                Expanded(
+                  child: SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      valueIndicatorColor: AppColor.textPrimaryColor,
+                      inactiveTrackColor: AppColor.white,
+                      activeTrackColor: AppColor.textPrimaryColor,
+                      activeTickMarkColor: Colors.transparent,
+                      inactiveTickMarkColor: Colors.transparent,
+                      trackHeight: 2.5,
+                      thumbShape:
+                      RoundSliderThumbShape(enabledThumbRadius: 8),
+                    ),
+                    child: Slider(
+                      value: _textSizeValue,
+                      label: "字号：$_textSizeValue",
+                      divisions: 30,
+                      min: 15,
+                      max: 45,
+                      onChanged: (double value) {
+                        setState(() {
+                          _textSizeValue = value;
+                        });
+                      },
+                      onChangeEnd: (value) {
+                        _spSetTextSizeValue(value);
+                      },
+                    ),
+                  ),
+                ),
+                Image.asset(
+                  "asset/readers/icon_content_font_big.png",
+                  color: _isNighttime ? AppColor.white : AppColor.darkGray,
+                  width: ScreenUtil().setWidth(60),
+                  height: ScreenUtil().setHeight(40),
+                ),
+                SizedBox(
+                  width: ScreenUtil().setWidth(20),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            color: _isNighttime ? Color(0xFF333333) : Color(0xFFF5F5F5),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: < Widget > [
+                Container(
+                  padding: EdgeInsets.only(left: ScreenUtil().setWidth(20)),
+                  child:Text(
+                  "间距",
+                  style: TextStyle(
+                    color: AppColor.contentColor,
+                    fontSize: ScreenUtil().setSp(28)),
+                  ),
+                ),
+                SizedBox(
+                  width: ScreenUtil().setWidth(20),
+                ),
+                Image.asset(
+                  "asset/readers/icon_content_space_big.png",
+                  color: _isNighttime ? AppColor.white : AppColor.darkGray,
+                  width: ScreenUtil().setWidth(60),
+                  height: ScreenUtil().setHeight(40),
+                ),
+                Expanded(
+                  child: SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      valueIndicatorColor: AppColor.textPrimaryColor,
+                      inactiveTrackColor: AppColor.white,
+                      activeTrackColor: AppColor.textPrimaryColor,
+                      activeTickMarkColor: Colors.transparent,
+                      inactiveTickMarkColor: Colors.transparent,
+                      trackHeight: 2.5,
+                      thumbShape:
+                      RoundSliderThumbShape(enabledThumbRadius: 8),
+                    ),
+                    child: Slider(
+                      value: _spaceValue,
+                      label: "字间距：$_spaceValue",
+                      min: 1.0,
+                      divisions: 20,
+                      max: 3.0,
+                      onChanged: (double value) {
+                        setState(() {
+                          _spaceValue = value;
+                        });
+                      },
+                      onChangeEnd: (value) {
+                        _spSetSpaceValue(value);
+                      },
+                    ),
+                  ),
+                ),
+                Image.asset(
+                  "asset/readers/icon_content_space_small.png",
+                  color: _isNighttime ? AppColor.white : AppColor.darkGray,
+                  width: ScreenUtil().setWidth(60),
+                  height: ScreenUtil().setHeight(40),
+                ),
+                SizedBox(
+                  width: ScreenUtil().setWidth(20),
+                ),
+              ],
+            ),
+          ),
+          
+          Container(
+            decoration: BoxDecoration(color: _isNighttime ? Color(0xFF333333) : Color(0xFFF5F5F5)),
+            padding: EdgeInsets.only(bottom: ScreenUtil.bottomBarHeight),
+            child: Column(
+              children: < Widget > [
+                buildBottomMenus(),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  _spSetTextSizeValue(double value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('textSizeValue', value);
+  }
+  _spSetSpaceValue(double value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('spaceValue', value);
+  }
+  buildBottomMenus() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: < Widget > [
+        buildBottomItem('目录', 'asset/readers/read_icon_catalog.png'),
+        buildBottomItem('亮度', 'asset/readers/read_icon_brightness.png'),
+        // buildBottomItem('字体', 'asset/readers/read_icon_font.png'),
+        buildBottomItem('设置', 'asset/readers/read_icon_setting.png'),
+      ],
+    );
+  }
+
+  buildBottomItem(String title, String icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 7),
+      child: Column(
+        children: < Widget > [
+          Image.asset(icon, color: _isNighttime ? Colors.white : Colors.black),
+          SizedBox(height: 5),
+          Text(title, style: TextStyle(fontSize: 12, color: _isNighttime ? Colors.white : Colors.black)),
+        ],
+      ),
     );
   }
 }
-
