@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xiongmao_reader/app/home/home_scene.dart';
+import 'package:xiongmao_reader/app/model/article_model.dart';
 import 'package:xiongmao_reader/app/pages/books/details/novel_detail_scene.dart';
 import 'package:xiongmao_reader/app/pages/books/details/novel_titles_scene.dart';
 import 'package:xiongmao_reader/app/pages/books/reader/novel_reader_scene.dart';
@@ -20,22 +21,21 @@ class AppNavigator {
   /*
    * 跳转到小说详情页面
    */
-  static toNovelDetail(BuildContext context){
-      AppNavigator.push(context, NovelDetailScene());
+  static toNovelDetail(BuildContext context,String id){
+      AppNavigator.push(context, NovelDetailScene(articleId:id));
   }
 
    /*
    * 跳转到小说章节目录页面
    */
-  static toNovelTitles(BuildContext context){
-      AppNavigator.push(context, NovelTitlesScene());
+  static toNovelTitles(BuildContext context,Article article){
+      AppNavigator.push(context, NovelTitlesScene(article:article));
   }
   
   /*
    * 跳转到小说阅读页面
    */
-  static toNovelReaders(BuildContext context,String artId){
-      // AppNavigator.push(context, NovelReaderScene(artId:artId));
-      AppNavigator.push(context, NovelReaderScene(false,0));
+  static toNovelReaders(BuildContext context,Article article,String novId){
+      AppNavigator.push(context, NovelReaderScene(article:article,novelId:novId));
   }
 }

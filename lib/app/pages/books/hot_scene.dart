@@ -31,6 +31,23 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
       {"url":"asset/icon/shares.png","title":"书友分享"}
     ];
     hot['title'] = ["一周热门书籍推荐","畅销精选"]; 
+
+    Map recommands = {};
+    recommands['firstRecommands'] = {
+        "url":'asset/books/1.jpg',
+        "title":"三寸人间",
+        "summary":"'举头三尺无神明，掌心三寸是人间。这是耳根继《仙逆》《求魔》《我欲封天》《一念永恒》后，创作的第五部长篇小说《三寸人间》。",
+        "author":"耳根",
+        "articleId":"0000",
+    };
+    recommands['otherRecommands'] = [
+      { "url":'asset/books/1.jpg',"title":"三寸人间","articleId":"0000"},
+      { "url":'asset/books/2.jpg',"title":"圣墟","articleId":"0000"},
+      { "url":'asset/books/3.jpg',"title":"绝品邪少","articleId":"0000"},
+      { "url":'asset/books/4.jpg',"title":"道君","articleId":"0000"},
+    ];
+    hot['recommands'] = recommands; 
+
     resp["hot"] = hot;
     setState(() {});
   }
@@ -63,7 +80,7 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
         widget = FloorTitle(title: resp['hot']['title'][0]);
         break;
       case 3:
-        widget = WeeksRecommends();
+        widget = WeeksRecommends(recommends : resp['hot']['recommands']);
         break;
       case 4:
         widget = FloorTitle(title: resp['hot']['title'][1]);

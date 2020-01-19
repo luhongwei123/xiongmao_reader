@@ -1,41 +1,71 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xiongmao_reader/app/components/app_color.dart';
 import 'package:xiongmao_reader/app/components/app_navigator.dart';
+import 'package:xiongmao_reader/app/components/load_view.dart';
+import 'package:xiongmao_reader/app/model/article_model.dart';
 
 class NovelDetailScene extends StatefulWidget {
+
+  final String articleId;
+
+  NovelDetailScene({this.articleId});
   @override
   _NovelDetailSceneState createState() => _NovelDetailSceneState();
 }
 
-class _NovelDetailSceneState extends State < NovelDetailScene > {
+class _NovelDetailSceneState extends State < NovelDetailScene > with OnLoadReloadListener {
 
   ScrollController _scrollController = ScrollController();
   String title = '';
   bool isUnfold = false;
+  Article article;
+  LoadStatus _loadStatus = LoadStatus.LOADING;
 
+  //test
+  Timer _timer;
+  int _count = 3; // 倒计时秒数
   @override
   void initState() {
     super.initState();
-    _scrollController..addListener(() {
+    //查询小说详情
+    
+    article = Article.fromJson({});
+
+    _scrollController.addListener(onScroll);
+   _timer = Timer.periodic(new Duration(seconds: 1), (timer) {
       setState(() {
-        if (_scrollController.offset > 100) {
-          title = '三寸人间';
-        } else if (_scrollController.offset <= 40) {
-          title = '';
+        if (_count <= 0) {
+          _loadStatus = LoadStatus.SUCCESS;
+        } else {
+          _count = _count - 1;
         }
       });
     });
   }
+  //滚动事件
+  onScroll(){
+    setState(() {
+      if (_scrollController.offset > 100) {
+        title = article.title;
+      } else if (_scrollController.offset <= 40) {
+        title = '';
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _loadStatus == LoadStatus.LOADING ?
+            LoadingView() : _loadStatus == LoadStatus.FAILURE ? 
+    FailureView(this) : Scaffold(
       body: NestedScrollView(
         controller: _scrollController,
         headerSliverBuilder: _sliverBuilder,
         body: SizedBox(
           height: ScreenUtil().setHeight(400),
-          child: _buildCard(),
+          child: _buildItem(),
         ),
       ),
       bottomNavigationBar: _buildNavigator(),
@@ -59,7 +89,7 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
         Expanded(
           child: GestureDetector(
             onTap: () {
-              AppNavigator.toNovelReaders(context,'0000');
+              AppNavigator.toNovelReaders(context,article,null);
             },
             child: Container(
               height: 40,
@@ -84,7 +114,7 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
       ]),
     );
   }
-  Widget _buildCard() {
+  Widget _buildItem() {
     return Container(
       color: Colors.white,
       child: Column(
@@ -120,7 +150,7 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
                 alignment: AlignmentDirectional.bottomEnd,
                 children: < Widget > [
                   Text(
-                    '举头三尺无神明，掌心三寸是人间。这是耳根继《仙逆》《求魔》《我欲封天》《一念永恒》后，创作的第五部长篇小说《三寸人间》。举头三尺无神明，掌心三寸是人间。这是耳根继《仙逆》《求魔》《我欲封天》《一念永恒》后，创作的第五部长篇小说《三寸人间》。举头三尺无神明，掌心三寸是人间。这是耳根继《仙逆》《求魔》《我欲封天》《一念永恒》后，创作的第五部长篇小说《三寸人间》。',
+                    article.summary,
                     maxLines: isUnfold ? null : 4,
                     style: TextStyle(fontSize: ScreenUtil().setSp(24)),
                   ),
@@ -131,7 +161,7 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
           Divider(),
           InkWell(
             onTap: () {
-              AppNavigator.toNovelTitles(context);
+              AppNavigator.toNovelTitles(context,article);
             },
             focusColor:Colors.white,
             splashColor:Colors.white,
@@ -199,14 +229,15 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
               Container(
                 padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(100), 0, 0, ScreenUtil().setWidth(20)),
                 alignment: Alignment.bottomLeft,
-                child: Image.asset('asset/books/1.jpg', width: ScreenUtil().setWidth(250), height: ScreenUtil().setHeight(180), ),
+                //待修改
+                child: Image.asset(article.imageUrl, width: ScreenUtil().setWidth(250), height: ScreenUtil().setHeight(180), ),
               ),
               Container(
                 padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(20), ScreenUtil().setWidth(200), ScreenUtil().setWidth(10), ScreenUtil().setWidth(20)),
                 alignment: Alignment.bottomRight,
                 child: Column(
                   children: < Widget > [
-                    Text('三寸人间',
+                    Text(article.title,
                       textAlign: TextAlign.left, //文本对齐方式  居中
                       textDirection: TextDirection.ltr, //
                       style: TextStyle(
@@ -214,7 +245,7 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
                         fontSize: ScreenUtil().setSp(40)
                       ),
                     ),
-                    Text('树根',
+                    Text(article.author,
                       textAlign: TextAlign.left, //文本对齐方式  居中
                       textDirection: TextDirection.ltr, //
                       style: TextStyle(
@@ -229,5 +260,10 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
         ),
       )
     ];
+  }
+
+  @override
+  void onReload() {
+    // TODO: implement onReload
   }
 }
