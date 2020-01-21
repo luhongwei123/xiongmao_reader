@@ -78,7 +78,6 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
       hot['recommands'] = data;
       resp['hot'] = hot;
       _loadStatus = LoadStatus.SUCCESS;
-      setState(() {});
     });
     _initBookList();
   }
@@ -269,7 +268,8 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
         ),
       ),
       onTap: () {
-        AppNavigator.toNovelDetail(context, item['articleId'].toString());
+        print("=========================${item.toString()}");
+        AppNavigator.toNovelDetail(context, item);
       }
     );
     list.add(widget);

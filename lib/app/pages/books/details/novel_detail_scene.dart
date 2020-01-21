@@ -1,49 +1,34 @@
-import 'dart:async';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xiongmao_reader/app/components/app_color.dart';
 import 'package:xiongmao_reader/app/components/app_navigator.dart';
-import 'package:xiongmao_reader/app/components/load_view.dart';
 import 'package:xiongmao_reader/app/model/article_model.dart';
 
 class NovelDetailScene extends StatefulWidget {
 
-  final String articleId;
+  final Map article;
 
-  NovelDetailScene({this.articleId});
+  NovelDetailScene({this.article});
   @override
   _NovelDetailSceneState createState() => _NovelDetailSceneState();
 }
 
-class _NovelDetailSceneState extends State < NovelDetailScene > with OnLoadReloadListener {
+class _NovelDetailSceneState extends State < NovelDetailScene > {
 
   ScrollController _scrollController = ScrollController();
   String title = '';
   bool isUnfold = false;
   Article article;
-  LoadStatus _loadStatus = LoadStatus.LOADING;
 
-  //test
-  Timer _timer;
-  int _count = 3; // 倒计时秒数
   @override
   void initState() {
     super.initState();
     //查询小说详情
     
-    article = Article.fromJson({});
+    article = Article.fromJson(this.widget.article);
 
     _scrollController.addListener(onScroll);
-   _timer = Timer.periodic(new Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_count <= 0) {
-          _loadStatus = LoadStatus.SUCCESS;
-        } else {
-          _count = _count - 1;
-        }
-      });
-    });
   }
   //滚动事件
   onScroll(){
@@ -56,10 +41,13 @@ class _NovelDetailSceneState extends State < NovelDetailScene > with OnLoadReloa
     });
   }
   @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
-    return _loadStatus == LoadStatus.LOADING ?
-            LoadingView() : _loadStatus == LoadStatus.FAILURE ? 
-    FailureView(this) : Scaffold(
+    return Scaffold(
       body: NestedScrollView(
         controller: _scrollController,
         headerSliverBuilder: _sliverBuilder,
@@ -230,28 +218,43 @@ class _NovelDetailSceneState extends State < NovelDetailScene > with OnLoadReloa
                 padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(100), 0, 0, ScreenUtil().setWidth(20)),
                 alignment: Alignment.bottomLeft,
                 //待修改
-                child: Image.asset(article.imageUrl, width: ScreenUtil().setWidth(250), height: ScreenUtil().setHeight(180), ),
+                child: CachedNetworkImage(
+                    imageUrl: article.imageUrl,
+                    width: ScreenUtil().setWidth(250),
+                    height: ScreenUtil().setHeight(180)
+                  )
               ),
               Container(
                 padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(20), ScreenUtil().setWidth(200), ScreenUtil().setWidth(10), ScreenUtil().setWidth(20)),
                 alignment: Alignment.bottomRight,
                 child: Column(
                   children: < Widget > [
-                    Text(article.title,
-                      textAlign: TextAlign.left, //文本对齐方式  居中
-                      textDirection: TextDirection.ltr, //
-                      style: TextStyle(
-                        color: AppColor.darkGray,
-                        fontSize: ScreenUtil().setSp(40)
+                    Container(
+                      width: ScreenUtil().setWidth(350),
+                      child: Text(article.title,
+                        textAlign: TextAlign.left, //文本对齐方式  居中
+                        textDirection: TextDirection.ltr, //
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: AppColor.darkGray,
+                          fontSize: ScreenUtil().setSp(40)
+                        ),
                       ),
                     ),
-                    Text(article.author,
-                      textAlign: TextAlign.left, //文本对齐方式  居中
-                      textDirection: TextDirection.ltr, //
-                      style: TextStyle(
-                        fontSize: ScreenUtil().setSp(25)
+                    Container(
+                      width: ScreenUtil().setWidth(350),
+                      child: Text(
+                        article.author,
+                        textAlign: TextAlign.left, //文本对齐方式  居中
+                        textDirection: TextDirection.ltr, //
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(25)
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               )
@@ -260,10 +263,5 @@ class _NovelDetailSceneState extends State < NovelDetailScene > with OnLoadReloa
         ),
       )
     ];
-  }
-
-  @override
-  void onReload() {
-    // TODO: implement onReload
   }
 }

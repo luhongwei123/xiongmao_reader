@@ -10,6 +10,9 @@ import 'package:xiongmao_reader/app/components/app_color.dart';
 import 'package:xiongmao_reader/app/components/load_view.dart';
 import 'package:xiongmao_reader/app/model/article_model.dart';
 import 'package:xiongmao_reader/app/model/novel_model.dart';
+
+import '../../../components/app_http_utils.dart';
+import '../../../model/article_model.dart';
 class NovelReaderScene extends StatefulWidget {
   final String novelId;
   final Article article;
@@ -33,14 +36,13 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
   bool isMenuVisiable = false;
   double _offset = 0;
 
+  Article article;
   Novel novel;
   static final double _sImagePadding = ScreenUtil().setWidth(40);
   int _duration = 200;
 
-  //test
-  Timer _timer;
-  int _count = 3; // 倒计时秒数
-  
+  int page = 1;//章节页数
+
   @override
   void dispose() {
     super.dispose();
@@ -78,10 +80,16 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
         _spaceValue = value;
       // });
     });
-    
+    getNovels(this.widget.article.id);
     // this.widget.novelId == null ? getData('0000') : getData(this.widget.novelId );
   }
-
+  getNovels(String id) async {
+     var response = await HttpUtils.getCatalogList(id, page);
+     print("返回数据:${response}");
+     List list = response['data']['catalog'] as List;
+     //查询章节详细信息
+     getData(list[0]);
+  }
   Future < double > _spGetSpaceValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var value = prefs.getDouble('spaceValue');
@@ -94,33 +102,14 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
     return value ?? 18;
   }
 
-  // void getData(articleId) async {
-
-  //   var response = await Request.get(action: 'article$articleId');
-  //   if ("err" == response) {
-  //     return null;
-  //   }
-  //   //test data待删除
-  //    _timer = Timer.periodic(new Duration(seconds: 1), (timer) {
-  //     setState(() {
-  //       if (_count <= 0) {
-  //         _loadStatus = LoadStatus.SUCCESS;
-  //       } else {
-  //         _count = _count - 1;
-  //       }
-  //     });
-  //   });
-  //   setState(() {
-      
-  //     novel = Novel.fromJson(response);
-  //     // _loadStatus = LoadStatus.SUCCESS;
-  //     ///部分小说文字排版有问题，需要特殊处理
-  //     _content = novel.contentAttr
-  //       .replaceAll("\t", "\n")
-  //       .replaceAll("\n\n\n\n", "\n\n");
-  //     _title = novel.title;
-  //   });
-  // }
+  void getData(Map data) async {
+    var response = await HttpUtils.getCatalog(data['bookId'], data['id'], data['num']);
+    novel = Novel.fromJson(response['data']);
+    _content = novel.contentAttr;
+    _title = novel.title;
+    _loadStatus = LoadStatus.SUCCESS;
+    setState(() {  });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,13 +178,14 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
                               width: 1),
                           ),
                           onPressed: () {
-                            if (novel.preArticleId == null || novel.preArticleId == '' || novel.preArticleId == "0") {
+                            if (novel.preArticleId == null) {
                               Fluttertoast.showToast(msg: "没有上一章了", fontSize: 14.0);
                             } else {
                               setState(() {
+                                page--;
                                 _loadStatus = LoadStatus.LOADING;
                               });
-                              // getData(novel.preArticleId);
+                              getNovels("${novel.novelId}");
                               _controller.jumpTo(0.0);
                               // _controller.animateTo(
                               //   this.widget._initOffset,
@@ -217,14 +207,15 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
                               width: 1),
                           ),
                           onPressed: () {
-                            if (novel.nextArticleId == null || novel.nextArticleId == '' || novel.nextArticleId == "0") {
+                            if (novel.nextArticleId == null) {
                               Fluttertoast.showToast(msg: "没有下一章了", fontSize: 14.0);
                               return;
                             } else {
                               setState(() {
+                                page++;
                                 _loadStatus = LoadStatus.LOADING;
                               });
-                              // getData(novel.nextArticleId);
+                              getNovels("${novel.novelId}");
                               _controller.jumpTo(0.0);
                               // _controller.animateTo(
                               //     this.widget._initOffset,

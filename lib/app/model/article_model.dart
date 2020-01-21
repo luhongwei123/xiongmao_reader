@@ -1,3 +1,5 @@
+import '../components/http_request.dart';
+
 class Article{
   String id;//id
   String imageUrl;//图片地址
@@ -11,10 +13,10 @@ class Article{
 
   //test data
   Article.fromJson(Map data){
-    id = "0000";
-    imageUrl = "asset/books/1.jpg";
-    title = "三寸人间";
-    author = "耳根";
-    summary = "举头三尺无神明，掌心三寸是人间。这是耳根继《仙逆》《求魔》《我欲封天》《一念永恒》后，创作的第五部长篇小说《三寸人间》。举头三尺无神明，掌心三寸是人间。这是耳根继《仙逆》《求魔》《我欲封天》《一念永恒》后，创作的第五部长篇小说《三寸人间》。举头三尺无神明，掌心三寸是人间。这是耳根继《仙逆》《求魔》《我欲封天》《一念永恒》后，创作的第五部长篇小说《三寸人间》。";
+    id = "${data['id']}";
+    imageUrl = Request.baseImageUrl +"${data['id']}";
+    title = data['name'];
+    author = data['author'];
+    summary = data['description'] == null ? data['summary'] : data['description'];
   }
 }

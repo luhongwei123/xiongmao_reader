@@ -24,6 +24,41 @@ class HttpUtils{
       var data = response.data;
       return json.decode(data);
   }
+  
+  static Future getCatalogList(String id,int page) async{
+      Map<String,Object> params = {};
+      params['bookId'] = id;
+      params['limit'] = 1;
+      params['page'] = page;
+      var dio = Request.getDio();
+      String path = Request.baseUrl + 'catalogList';
+      Response<String> response ;
+      try{
+        response  = await dio.get(path,queryParameters: params);
+      }catch(e){
+        return 'error';
+      }
+      var data = response.data;
+      return json.decode(data);
+  }
+
+  static Future getCatalog(int bookId,int catalogId,int number) async{
+      Map<String,Object> params = {};
+      params['bookId'] = bookId;
+      params['catalogId'] = catalogId;
+      params['num'] = number;
+      var dio = Request.getDio();
+      String path = Request.baseUrl + 'catalog';
+      Response<String> response ;
+      try{
+        response  = await dio.get(path,queryParameters: params);
+      }catch(e){
+        return 'error';
+      }
+      var data = response.data;
+      return json.decode(data);
+  }
+
   static Future getList(String type,int limit,int page) async{
       Map<String,Object> params = {};
       params['isRandom'] = false;

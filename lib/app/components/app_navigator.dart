@@ -21,8 +21,8 @@ class AppNavigator {
   /*
    * 跳转到小说详情页面
    */
-  static toNovelDetail(BuildContext context,String id){
-      AppNavigator.push(context, NovelDetailScene(articleId:id));
+  static toNovelDetail(BuildContext context,Map map){
+      AppNavigator.push(context, NovelDetailScene(article:map));
   }
 
    /*

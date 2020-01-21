@@ -1,9 +1,10 @@
 class Novel {
-  String id;
-  String novelId;
+  int id;
+  int novelId;
+  int num;
   String title;
-  String nextArticleId;
-  String preArticleId;
+  int nextArticleId;
+  int preArticleId;
   String contentAttr;
   
   int get pageCount{
@@ -13,11 +14,12 @@ class Novel {
     return contentAttr[index].toString();
   }
   Novel.fromJson(Map data){
-    id = data['id'];
-    novelId = data['novel_id'];
-    title = data['title'];
-    nextArticleId = data['next_id'];
-    preArticleId = data['prev_id'];
-    contentAttr = data['content'];
+    id = data['catalog']['id'];
+    novelId = data['catalog']['bookId'];
+    num = data['catalog']['num'];
+    title = data['catalog']['name'];
+    nextArticleId = data['nextCatalog']['id'];
+    preArticleId = data['lastCatalog']['id'];
+    contentAttr = data['container'];
   }
 }

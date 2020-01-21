@@ -92,7 +92,7 @@ class WeeksRecommends extends StatelessWidget {
         ),
       ),
       onTap: () {
-        AppNavigator.toNovelDetail(context, map['articleId'].toString());
+        AppNavigator.toNovelDetail(context, map);
       }
     );
   }
@@ -105,7 +105,7 @@ class WeeksRecommends extends StatelessWidget {
           children: < Widget > [
             InkWell(
               onTap: () {
-                AppNavigator.toNovelDetail(context, item['articleId'].toString());
+                AppNavigator.toNovelDetail(context, item);
               },
               child: CachedNetworkImage(
                     imageUrl: item['url'].toString(),
