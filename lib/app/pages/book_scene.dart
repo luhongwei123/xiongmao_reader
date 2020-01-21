@@ -42,11 +42,12 @@ class _BookSceneState extends State < BookScene > with SingleTickerProviderState
     return Scaffold(
       appBar: _appBarBuilder(),
       body: NestedScrollView(
+        controller: sc,
         headerSliverBuilder: _sliverBuilder,
         body: TabBarView(
           controller: controller,
           children: [
-            HotBookScene(), //精选
+            HotBookScene(sc:sc), //精选
             NewBookScene(), //新书
             BoyScene(), //男生频道
             GirlScene(), //女生频道

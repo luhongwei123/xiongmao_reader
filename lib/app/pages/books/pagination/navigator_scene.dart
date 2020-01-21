@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:xiongmao_reader/app/components/toast_utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class NavigatorScene extends StatelessWidget {
 
@@ -26,7 +26,7 @@ class NavigatorScene extends StatelessWidget {
     navigators.forEach((item){
       var widget = InkWell(
             onTap: () {
-              Toast.show(item['title']);
+              Fluttertoast.showToast(msg:item['title']);
             },
             child: Column(
               children: < Widget > [

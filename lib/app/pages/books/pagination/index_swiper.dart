@@ -1,7 +1,7 @@
 import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:xiongmao_reader/app/components/toast_utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 
@@ -44,7 +44,7 @@ class _IndexSwiperState extends State < IndexSwiper > {
         //如果是网络图片 推荐使用CachedNetworkImage
         child: Image.asset(item["url"], fit: BoxFit.fill, ),
         onTap: (){
-          Toast.show(item["url"]);
+          Fluttertoast.showToast(msg:item["url"]);
         },
       );
       list.add(image);

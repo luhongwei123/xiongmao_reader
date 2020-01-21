@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xiongmao_reader/app/components/app_color.dart';
-import 'package:xiongmao_reader/app/components/http_request.dart';
 import 'package:xiongmao_reader/app/components/load_view.dart';
 import 'package:xiongmao_reader/app/model/article_model.dart';
 import 'package:xiongmao_reader/app/model/novel_model.dart';
@@ -80,7 +79,7 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
       // });
     });
     
-    this.widget.novelId == null ? getData('0000') : getData(this.widget.novelId );
+    // this.widget.novelId == null ? getData('0000') : getData(this.widget.novelId );
   }
 
   Future < double > _spGetSpaceValue() async {
@@ -95,32 +94,33 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
     return value ?? 18;
   }
 
-  void getData(articleId) async {
-    var response = await Request.get(action: 'article$articleId');
-    if ("err" == response) {
-      return null;
-    }
-    //test data待删除
-     _timer = Timer.periodic(new Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_count <= 0) {
-          _loadStatus = LoadStatus.SUCCESS;
-        } else {
-          _count = _count - 1;
-        }
-      });
-    });
-    setState(() {
+  // void getData(articleId) async {
+
+  //   var response = await Request.get(action: 'article$articleId');
+  //   if ("err" == response) {
+  //     return null;
+  //   }
+  //   //test data待删除
+  //    _timer = Timer.periodic(new Duration(seconds: 1), (timer) {
+  //     setState(() {
+  //       if (_count <= 0) {
+  //         _loadStatus = LoadStatus.SUCCESS;
+  //       } else {
+  //         _count = _count - 1;
+  //       }
+  //     });
+  //   });
+  //   setState(() {
       
-      novel = Novel.fromJson(response);
-      // _loadStatus = LoadStatus.SUCCESS;
-      ///部分小说文字排版有问题，需要特殊处理
-      _content = novel.contentAttr
-        .replaceAll("\t", "\n")
-        .replaceAll("\n\n\n\n", "\n\n");
-      _title = novel.title;
-    });
-  }
+  //     novel = Novel.fromJson(response);
+  //     // _loadStatus = LoadStatus.SUCCESS;
+  //     ///部分小说文字排版有问题，需要特殊处理
+  //     _content = novel.contentAttr
+  //       .replaceAll("\t", "\n")
+  //       .replaceAll("\n\n\n\n", "\n\n");
+  //     _title = novel.title;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +195,7 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
                               setState(() {
                                 _loadStatus = LoadStatus.LOADING;
                               });
-                              getData(novel.preArticleId);
+                              // getData(novel.preArticleId);
                               _controller.jumpTo(0.0);
                               // _controller.animateTo(
                               //   this.widget._initOffset,
@@ -224,7 +224,7 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
                               setState(() {
                                 _loadStatus = LoadStatus.LOADING;
                               });
-                              getData(novel.nextArticleId);
+                              // getData(novel.nextArticleId);
                               _controller.jumpTo(0.0);
                               // _controller.animateTo(
                               //     this.widget._initOffset,

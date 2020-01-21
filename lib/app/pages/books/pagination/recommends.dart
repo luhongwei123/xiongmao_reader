@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xiongmao_reader/app/components/app_navigator.dart';
@@ -30,7 +31,12 @@ class WeeksRecommends extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: Image.asset(map['url'], width: ScreenUtil().setWidth(165)),
+                  child: CachedNetworkImage(
+                    imageUrl: map['url']+'',
+                    // fit: fit == null ? BoxFit.cover : fit,
+                    width: ScreenUtil().setWidth(165),
+                    // height: height,
+                  )
                 ),
               ],
             ),
@@ -90,8 +96,8 @@ class WeeksRecommends extends StatelessWidget {
       }
     );
   }
-  Widget _otherRecommond( BuildContext context,List list) {
-    List<Widget> returnList = [];
+  Widget _otherRecommond(BuildContext context, List list) {
+    List < Widget > returnList = [];
     list.forEach((item) {
       var widget = Container(
         padding: EdgeInsets.all(5),
@@ -101,9 +107,18 @@ class WeeksRecommends extends StatelessWidget {
               onTap: () {
                 AppNavigator.toNovelDetail(context, item['articleId'].toString());
               },
-              child: Image.asset(item['url'], width: ScreenUtil().setWidth(165), ),
+              child: CachedNetworkImage(
+                    imageUrl: item['url'].toString(),
+                    // fit: fit == null ? BoxFit.cover : fit,
+                    width: ScreenUtil().setWidth(165),
+                    // height: height,
+                  ),
             ),
-            Text(item['title']),
+            Container(
+              width: ScreenUtil().setWidth(165),
+              child: Text(item['title'], style: TextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
+            ),
+
           ],
         ),
       );
