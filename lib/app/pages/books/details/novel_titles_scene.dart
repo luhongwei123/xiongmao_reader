@@ -99,8 +99,7 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > with OnLoadReloa
                 return InkWell(
                   splashColor: Colors.white,
                   onTap: () {
-                    _spSetNovelIdValue("");
-                    AppNavigator.toNovelReaders(context, this.widget.article,list[index]);
+                    AppNavigator.toNovelReaders(context, this.widget.article,list[index],index);
                   },
                   child: Container(
                     padding: EdgeInsets.only(left: ScreenUtil().setWidth(40)),
@@ -120,10 +119,6 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > with OnLoadReloa
     );
   }
 
-  _spSetNovelIdValue(String value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('articleId', value);
-  }
   @override
   void onReload() {
     // TODO: implement onReload

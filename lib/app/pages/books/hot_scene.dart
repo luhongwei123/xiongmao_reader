@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xiongmao_reader/app/components/app_http_utils.dart';
 import 'package:xiongmao_reader/app/components/app_navigator.dart';
 import 'package:xiongmao_reader/app/components/http_request.dart';
@@ -279,12 +280,18 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
       ),
       onTap: () {
         // print("=========================${item.toString()}");
+        _spSetNovelIdValue("");
         AppNavigator.toNovelDetail(context, item);
       }
     );
     list.add(widget);
     });
     return list;
+  }
+  
+  _spSetNovelIdValue(String value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('articleId', value);
   }
   @override
   void onReload() {}

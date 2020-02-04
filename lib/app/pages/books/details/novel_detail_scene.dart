@@ -78,7 +78,7 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
         Expanded(
           child: GestureDetector(
             onTap: () {
-              AppNavigator.toNovelReaders(context,article,null);
+              AppNavigator.toNovelReaders(context,article,null,null);
             },
             child: Container(
               height: 40,

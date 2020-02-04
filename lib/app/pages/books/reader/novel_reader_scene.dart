@@ -17,7 +17,8 @@ import '../../../model/article_model.dart';
 class NovelReaderScene extends StatefulWidget {
   final Article article;
   final Map map;
-  NovelReaderScene({
+  final int index;
+  NovelReaderScene(this.index,{
     this.article,
     this.map
   });
@@ -87,6 +88,10 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
         setState(() {});
       }
       if(this.widget.map != null){
+        if(this.widget.index != null){
+          page = this.widget.index + 1;
+          setState(() {});
+        }
         getData(this.widget.map);
       }else{
         getNovels(this.widget.article.id);
@@ -234,6 +239,7 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
                                 page++;
                                 _loadStatus = LoadStatus.LOADING;
                               });
+                              // print("++++++++++++++++++++++++++${page}");
                               getNovels("${novel.novelId}");
                               _controller.jumpTo(0.0);
                               // _controller.animateTo(
