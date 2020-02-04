@@ -35,7 +35,7 @@ class AppNavigator {
   /*
    * 跳转到小说阅读页面
    */
-  static toNovelReaders(BuildContext context,Article article,String novId){
-      AppNavigator.push(context, NovelReaderScene(article:article,novelId:novId));
+  static toNovelReaders(BuildContext context,Article article,Map map){
+      AppNavigator.push(context, NovelReaderScene(article:article,map: map,));
   }
 }

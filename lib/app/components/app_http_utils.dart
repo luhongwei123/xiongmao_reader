@@ -24,7 +24,23 @@ class HttpUtils{
       var data = response.data;
       return json.decode(data);
   }
-  
+   static Future getCatalogListByLimit(String id,int page) async{
+      Map<String,Object> params = {};
+      params['bookId'] = id;
+      params['limit'] = 20;
+      params['page'] = page;
+      var dio = Request.getDio();
+      String path = Request.baseUrl + 'catalogList';
+      Response<String> response ;
+      try{
+        response  = await dio.get(path,queryParameters: params);
+      }catch(e){
+        return 'error';
+      }
+      var data = response.data;
+      return json.decode(data);
+  }
+
   static Future getCatalogList(String id,int page) async{
       Map<String,Object> params = {};
       params['bookId'] = id;

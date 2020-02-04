@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,11 +15,11 @@ import 'package:xiongmao_reader/app/model/novel_model.dart';
 import '../../../components/app_http_utils.dart';
 import '../../../model/article_model.dart';
 class NovelReaderScene extends StatefulWidget {
-  final String novelId;
   final Article article;
+  final Map map;
   NovelReaderScene({
-    this.novelId,
-    this.article
+    this.article,
+    this.map
   });
   @override
   _NovelReaderSceneState createState() => _NovelReaderSceneState();
@@ -80,13 +81,24 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
         _spaceValue = value;
       // });
     });
-    getNovels(this.widget.article.id);
-    // this.widget.novelId == null ? getData('0000') : getData(this.widget.novelId );
+    _spGetNovelIdValue().then((value){
+      if(value != null && value!="" ){
+        page = int.parse(value.split("|")[1]);
+        setState(() {});
+      }
+      if(this.widget.map != null){
+        getData(this.widget.map);
+      }else{
+        getNovels(this.widget.article.id);
+      }
+    });
   }
   getNovels(String id) async {
+    _spSetNovelIdValue(id+"|${page}");
      var response = await HttpUtils.getCatalogList(id, page);
-     print("返回数据:${response}");
+     
      List list = response['data']['catalog'] as List;
+    //  print("返回数据:${list.toString()}");
      //查询章节详细信息
      getData(list[0]);
   }
@@ -102,8 +114,15 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
     return value ?? 18;
   }
 
+  Future < String > _spGetNovelIdValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var value = prefs.getString('articleId');
+    return value ;
+  }
+
   void getData(Map data) async {
     var response = await HttpUtils.getCatalog(data['bookId'], data['id'], data['num']);
+    // print("===================+${response['data'].toString()}");
     novel = Novel.fromJson(response['data']);
     _content = novel.contentAttr;
     _title = novel.title;
@@ -144,13 +163,13 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
                       SizedBox(
                         height: ScreenUtil().setHeight(30),
                       ),
-                      Text(
-                        _content,
-                        style: TextStyle(
+                      Html(
+                        data: _content,
+                        defaultTextStyle: TextStyle(
                           color: _isNighttime ? AppColor.contentColor : AppColor.black,
                           fontSize: _textSizeValue,
                           height: _spaceValue,
-                        ),
+                        )
                       ),
                       SizedBox(
                         height: ScreenUtil().setHeight(100),
@@ -472,6 +491,10 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
     );
   }
 
+  _spSetNovelIdValue(String value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('articleId', value);
+  }
   _spSetTextSizeValue(double value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setDouble('textSizeValue', value);

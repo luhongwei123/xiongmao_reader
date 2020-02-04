@@ -25,10 +25,11 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
   void initState() {
     super.initState();
     //查询小说详情
-    
+    // print("++++++++++++++++++++++++${this.widget.article}");
     article = Article.fromJson(this.widget.article);
-
     _scrollController.addListener(onScroll);
+    setState(() {
+    });
   }
   //滚动事件
   onScroll(){
@@ -138,7 +139,9 @@ class _NovelDetailSceneState extends State < NovelDetailScene > {
                 alignment: AlignmentDirectional.bottomEnd,
                 children: < Widget > [
                   Text(
-                    article.summary,
+                    article.summary.replaceAll("<p>", "")
+                                   .replaceAll("</p>", "")
+                                   .replaceAll("<br>", ""),
                     maxLines: isUnfold ? null : 4,
                     style: TextStyle(fontSize: ScreenUtil().setSp(24)),
                   ),

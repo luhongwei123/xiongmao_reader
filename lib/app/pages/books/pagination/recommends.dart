@@ -13,6 +13,7 @@ class WeeksRecommends extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print("加载的数据是：${recommends.toString()}");
     return SingleChildScrollView(
       child: Column(
         children: < Widget > [
@@ -44,7 +45,7 @@ class WeeksRecommends extends StatelessWidget {
               children: < Widget > [
                 Container(
                   width: ScreenUtil().setWidth(550),
-                  child: Text(map['title'],
+                  child: Text(map['name'],
                     textAlign: TextAlign.left, //文本对齐方式  居中
                     textDirection: TextDirection.ltr, //
                     softWrap: true,
@@ -116,7 +117,7 @@ class WeeksRecommends extends StatelessWidget {
             ),
             Container(
               width: ScreenUtil().setWidth(165),
-              child: Text(item['title'], style: TextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
+              child: Text(item['name'], style: TextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
             ),
 
           ],

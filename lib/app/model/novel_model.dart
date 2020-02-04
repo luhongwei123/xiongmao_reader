@@ -18,8 +18,8 @@ class Novel {
     novelId = data['catalog']['bookId'];
     num = data['catalog']['num'];
     title = data['catalog']['name'];
-    nextArticleId = data['nextCatalog']['id'];
-    preArticleId = data['lastCatalog']['id'];
+    nextArticleId = data['nextCatalog']==null?null : data['nextCatalog']['id'];
+    preArticleId = data['lastCatalog']==null?null : data['lastCatalog']['id'] ;
     contentAttr = data['container'];
   }
 }

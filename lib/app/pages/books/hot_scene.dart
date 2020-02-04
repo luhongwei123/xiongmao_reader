@@ -77,9 +77,9 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
     _init().then((data) {
       hot['recommands'] = data;
       resp['hot'] = hot;
+      _initBookList();
       _loadStatus = LoadStatus.SUCCESS;
     });
-    _initBookList();
   }
   Future _init() async {
     var response = await HttpUtils.getHot();
@@ -87,30 +87,38 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
     Map recommands = {};
     recommands['firstRecommands'] = {
       "url": Request.baseImageUrl+'${list[0]['id']}',
-      "title": list[0]['name'],
+      "name": list[0]['name'],
       "summary": list[0]['description'],
       "author": list[0]['author'],
-      "articleId": list[0]['id'],
+      "id": list[0]['id'],
     };
     recommands['otherRecommands'] = [{
         "url": Request.baseImageUrl+'${list[1]['id']}',
-        "title": list[1]['name'],
-        "articleId": list[1]['id']
+        "summary": list[1]['description'],
+        "author": list[1]['author'],
+        "name": list[1]['name'],
+        "id": list[1]['id']
       },
       {
         "url": Request.baseImageUrl+'${list[2]['id']}',
-        "title": list[2]['name'],
-        "articleId": list[2]['id']
+        "summary": list[2]['description'],
+        "author": list[2]['author'],
+        "name": list[2]['name'],
+        "id": list[2]['id']
       },
       {
         "url": Request.baseImageUrl+'${list[3]['id']}',
-        "title": list[3]['name'],
-        "articleId": list[3]['id']
+        "summary": list[3]['description'],
+        "author": list[3]['author'],
+        "name": list[3]['name'],
+        "id": list[3]['id']
       },
       {
         "url": Request.baseImageUrl+'${list[4]['id']}',
-        "title": list[4]['name'],
-        "articleId": list[4]['id']
+        "summary": list[4]['description'],
+        "author": list[4]['author'],
+        "name": list[4]['name'],
+        "id": list[4]['id']
       },
     ];
     return recommands;
@@ -137,14 +145,16 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
           key: _footerkey,
           bgColor: Colors.white,
           textColor: Colors.black,
-          moreInfoColor: Colors.white,
-          loadText: '加载中...',
-          loadedText:'加载成功...',
+          moreInfoColor: Colors.black,
+          loadText: '',
+          loadedText:'加载成功',
+          isFloat:true,
           showMore: true,
-          noMoreText: '加载成功',
+          noMoreText: '-----我也是有底线的-----',
           loadingText:'加载中...',
-          moreInfo: '加载中...',
-          loadReadyText: '上拉加载更多',
+          moreInfo: '最后更新于 %T',
+          loadReadyText: '',
+          loadHeight:ScreenUtil().setHeight(70),
         ),
         outerController: this.widget.sc,
         loadMore:() async {
@@ -268,7 +278,7 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
         ),
       ),
       onTap: () {
-        print("=========================${item.toString()}");
+        // print("=========================${item.toString()}");
         AppNavigator.toNovelDetail(context, item);
       }
     );
