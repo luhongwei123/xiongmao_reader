@@ -94,4 +94,23 @@ class HttpUtils{
       var data = response.data;
       return json.decode(data);
   }
+  static Future getRecentBook(int bookId) async{
+      Map<String,Object> params = {};
+      params['isRandom'] = false;
+      params['limit'] = 1;
+      params['page'] = 1;
+      params['bookId'] = bookId;
+      var dio = Request.getDio();
+      String path = Request.baseUrl + 'list';
+      Response<String> response ;
+      try{
+        response  = await dio.get(path,queryParameters: params);
+      }catch(e){
+
+        print(e);
+        return 'error';
+      }
+      var data = response.data;
+      return json.decode(data);
+  }
 }

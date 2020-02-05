@@ -25,6 +25,8 @@ class NavigatorScene extends StatelessWidget {
     List<Widget> list = [];
     navigators.forEach((item){
       var widget = InkWell(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
             onTap: () {
               Fluttertoast.showToast(msg:item['title']);
             },

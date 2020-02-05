@@ -25,6 +25,8 @@ class WeeksRecommends extends StatelessWidget {
   }
   Widget _firstRecommond(BuildContext context, Map map) {
     return InkWell(
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       child: Container(
         child: Row(
           children: < Widget > [

@@ -8,7 +8,7 @@ class TextSearcher extends StatelessWidget implements PreferredSizeWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        width: ScreenUtil().setWidth(500),
+        width: ScreenUtil().setWidth(520),
         height: ScreenUtil().setHeight(70),
         padding: EdgeInsets.all(0),
         child: TextField(

@@ -8,18 +8,17 @@ import 'package:xiongmao_reader/app/components/app_navigator.dart';
 import 'package:xiongmao_reader/app/components/http_request.dart';
 import 'package:xiongmao_reader/app/components/load_view.dart';
 import 'package:xiongmao_reader/app/pages/books/pagination/floor_tools.dart';
-import 'package:xiongmao_reader/app/pages/books/pagination/index_swiper.dart';
-import 'package:xiongmao_reader/app/pages/books/pagination/navigator_scene.dart';
-// import 'package:xiongmao_reader/app/pages/books/pagination/recommends.dart';
-
-class HotBookScene extends StatefulWidget {
+ 
+class FantasyScene extends StatefulWidget{
   final ScrollController sc;
-  HotBookScene({this.sc});
+  final String bookType;
+  final String title;
+  FantasyScene({this.sc,this.bookType,this.title});
   @override
-  _HotBookScene createState() => _HotBookScene();
+  _FantasySceneState createState() => _FantasySceneState();
 }
-
-class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClientMixin, OnLoadReloadListener {
+ 
+class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClientMixin , OnLoadReloadListener{
   Map < String, dynamic > resp = {};
   Map < String, Object > hot = {};
 
@@ -29,115 +28,27 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
   int limit = 10;
   int page = 1;
   List bookList; 
-
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => true; 
+  
   @override
   void initState() {
     super.initState();
-    hot['imageUrls'] = [{
-        "url": "asset/sea.png",
-        "text": "sea.png"
-      },
-      {
-        "url": "asset/star.jpg",
-        "text": "star.jpg"
-      },
-      {
-        "url": "asset/road.jpg",
-        "text": "road.jpg"
-      },
-      {
-        "url": "asset/star.jpg",
-        "text": "star.jpg"
-      }
-    ];
-    hot['navigaors'] = [{
-        "url": "asset/icon/kinds.png",
-        "title": "分类"
-      },
-      {
-        "url": "asset/icon/ranking.png",
-        "title": "排行"
-      },
-      {
-        "url": "asset/icon/books.png",
-        "title": "书单"
-      },
-      {
-        "url": "asset/icon/articles.png",
-        "title": "网文"
-      },
-      {
-        "url": "asset/icon/shares.png",
-        "title": "书友分享"
-      }
-    ];
-    hot['title'] = ["一周热门书籍推荐", "畅销精选"];
-
-    _init().then((data) {
-      hot['recommands'] = data;
-      resp['hot'] = hot;
-      _initBookList();
-      _loadStatus = LoadStatus.SUCCESS;
-    });
+    _initBookList();
   }
-  Future _init() async {
-    var response = await HttpUtils.getHot();
-    List list = response['data']['book'] as List;
-    Map recommands = {};
-    recommands['firstRecommands'] = {
-      "url": Request.baseImageUrl+'${list[0]['id']}',
-      "name": list[0]['name'],
-      "summary": list[0]['description'],
-      "author": list[0]['author'],
-      "id": list[0]['id'],
-    };
-    recommands['otherRecommands'] = [{
-        "url": Request.baseImageUrl+'${list[1]['id']}',
-        "summary": list[1]['description'],
-        "author": list[1]['author'],
-        "name": list[1]['name'],
-        "id": list[1]['id']
-      },
-      {
-        "url": Request.baseImageUrl+'${list[2]['id']}',
-        "summary": list[2]['description'],
-        "author": list[2]['author'],
-        "name": list[2]['name'],
-        "id": list[2]['id']
-      },
-      {
-        "url": Request.baseImageUrl+'${list[3]['id']}',
-        "summary": list[3]['description'],
-        "author": list[3]['author'],
-        "name": list[3]['name'],
-        "id": list[3]['id']
-      },
-      {
-        "url": Request.baseImageUrl+'${list[4]['id']}',
-        "summary": list[4]['description'],
-        "author": list[4]['author'],
-        "name": list[4]['name'],
-        "id": list[4]['id']
-      },
-    ];
-    return recommands;
-  }
-
   Future _initBookList()async{ 
-    var response = await HttpUtils.getList(null,limit,page);
+    var response = await HttpUtils.getList(this.widget.bookType,limit,page);
     if(bookList != null){
         bookList.addAll(response['data']['book'] as List);
     }else{
         bookList = response['data']['book'] as List;
     }
+    _loadStatus = LoadStatus.SUCCESS;
     setState(() { });
   }
-
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    super.build(context); 
     return _loadStatus == LoadStatus.LOADING ?
       LoadingView() :
       _loadStatus == LoadStatus.FAILURE ?
@@ -184,21 +95,9 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
     var widget;
     switch (index) {
       case 0:
-        widget = IndexSwiper(imageUrls: resp['hot']['imageUrls'], );
+        widget = FloorTitle(title: this.widget.title);
         break;
       case 1:
-        widget = NavigatorScene(navigators: resp['hot']['navigaors'], );
-        break;
-      // case 2:
-      //   widget = FloorTitle(title: resp['hot']['title'][0]);
-      //   break;
-      // case 3:
-      //   widget = WeeksRecommends(recommends: resp['hot']['recommands']);
-      //   break;
-      case 2:
-        widget = FloorTitle(title: resp['hot']['title'][1]);
-        break;
-      case 3:
         widget = Column(
           children: _buildItem(),
         );
@@ -308,5 +207,7 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
     await prefs.setString('articleId', value);
   }
   @override
-  void onReload() {}
+  void onReload() {
+    // TODO: implement onReload
+  }
 }
