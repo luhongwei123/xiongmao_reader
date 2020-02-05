@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:xiongmao_reader/app/components/app_color.dart';
-import 'package:xiongmao_reader/app/pages/book_scene.dart';
-import 'package:xiongmao_reader/app/pages/mine_scene.dart';
-import 'package:xiongmao_reader/app/pages/recommend_scene.dart';
-import 'package:xiongmao_reader/app/pages/video_scene.dart';
+import 'package:xiongmao_reader/app/components/public.dart';
 
 
 class HomeScene extends StatefulWidget {
@@ -38,7 +32,14 @@ class _HomeSceneState extends State < HomeScene > {
     MineScene()
   ];
   int _index = 0;
-
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
+  }
   @override
   Widget build(BuildContext context) {
     //width: 750,height: 1334

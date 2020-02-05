@@ -1,8 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:xiongmao_reader/app/components/app_navigator.dart';
 
+import 'package:flutter/material.dart';
+import 'package:xiongmao_reader/app/components/public.dart';
 class WeeksRecommends extends StatelessWidget {
 
   final Map recommends;

@@ -1,13 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xiongmao_reader/app/components/app_color.dart';
 import 'package:xiongmao_reader/app/components/app_http_utils.dart';
 import 'package:xiongmao_reader/app/components/app_navigator.dart';
+import 'package:xiongmao_reader/app/components/behaver.dart';
 import 'package:xiongmao_reader/app/components/load_view.dart';
 import 'package:xiongmao_reader/app/model/article_model.dart';
 
@@ -122,16 +120,5 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > with OnLoadReloa
   @override
   void onReload() {
     // TODO: implement onReload
-  }
-}
-
-class MyBehavior extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
-    if (Platform.isAndroid || Platform.isFuchsia) {
-      return child;
-    } else {
-      return super.buildViewportChrome(context, child, axisDirection);
-    }
   }
 }

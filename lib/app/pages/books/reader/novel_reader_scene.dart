@@ -1,19 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:xiongmao_reader/app/components/app_color.dart';
-import 'package:xiongmao_reader/app/components/load_view.dart';
-import 'package:xiongmao_reader/app/model/article_model.dart';
-import 'package:xiongmao_reader/app/model/novel_model.dart';
+import 'package:xiongmao_reader/app/components/public.dart';
 
-import '../../../components/app_http_utils.dart';
-import '../../../model/article_model.dart';
 class NovelReaderScene extends StatefulWidget {
   final Article article;
   final Map map;
@@ -211,11 +200,6 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
                               });
                               getNovels("${novel.novelId}");
                               _controller.jumpTo(0.0);
-                              // _controller.animateTo(
-                              //   this.widget._initOffset,
-                              //   duration:Duration(milliseconds:200),
-                              //   curve: Curves.easeInOut
-                              // );
                             }
                           },
                           child: Text("上一章"),
@@ -239,14 +223,8 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
                                 page++;
                                 _loadStatus = LoadStatus.LOADING;
                               });
-                              // print("++++++++++++++++++++++++++${page}");
                               getNovels("${novel.novelId}");
                               _controller.jumpTo(0.0);
-                              // _controller.animateTo(
-                              //     this.widget._initOffset,
-                              //     duration:Duration(milliseconds:200),
-                              //     curve: Curves.easeOut
-                              // );
                             }
                           },
                           child: Text("下一章"),
@@ -258,7 +236,6 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
               ],
             ),
           ),
-          // buildMenu(),
           isMenuVisiable ? buildTopView(context) : Container(),
           isMenuVisiable ? buildBottomView() : Container(),
           Positioned(

@@ -1,21 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:xiongmao_reader/app/components/app_color.dart';
-import 'package:xiongmao_reader/app/components/app_http_utils.dart';
-import 'package:xiongmao_reader/app/components/app_navigator.dart';
-import 'package:xiongmao_reader/app/components/app_searcher.dart';
-import 'package:xiongmao_reader/app/pages/books/hot_scene.dart';
-// import 'package:xiongmao_reader/app/pages/books/science_scene.dart';
-
-// import 'books/coatard_scene.dart';
-import 'books/fantasy_scene.dart';
-// import 'books/games_scene.dart';
-// import 'books/history_scene.dart';
-// import 'books/metropolis_scene.dart';
-// import 'books/others_scene.dart';
+import 'package:xiongmao_reader/app/components/public.dart';
 
 class BookScene extends StatefulWidget {
   @override
@@ -60,12 +44,6 @@ class _BookSceneState extends State<BookScene>
     controller =
         TabController(initialIndex: 0, length: tabs.length, vsync: this);
     sc = new ScrollController();
-  }
-  @override
-  void dispose() {
-    controller.dispose();
-    sc.dispose();
-    super.dispose();
   }
   @override
   Widget build(BuildContext context) {

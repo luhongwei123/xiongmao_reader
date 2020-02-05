@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:xiongmao_reader/app/components/app_color.dart';
 import 'package:xiongmao_reader/app/home/home_scene.dart';
 
@@ -17,6 +18,10 @@ class _SplashPageState extends State < SplashPage > {
   @override
   void initState() {
     super.initState();
+     SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
     _timer = Timer.periodic(new Duration(seconds: 1), (timer) {
       setState(() {
         if (_count <= 0) {

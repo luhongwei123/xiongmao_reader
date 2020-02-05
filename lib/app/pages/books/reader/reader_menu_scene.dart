@@ -1,10 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:async';
 
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:async';
+import 'package:xiongmao_reader/app/components/public.dart';
 
 class ReaderMenuScene extends StatefulWidget {
   final VoidCallback onTap;

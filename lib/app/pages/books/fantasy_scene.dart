@@ -5,8 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xiongmao_reader/app/components/app_http_utils.dart';
 import 'package:xiongmao_reader/app/components/app_navigator.dart';
+import 'package:xiongmao_reader/app/components/behaver.dart';
 import 'package:xiongmao_reader/app/components/http_request.dart';
 import 'package:xiongmao_reader/app/components/load_view.dart';
+import 'package:xiongmao_reader/app/components/more_info.dart';
 import 'package:xiongmao_reader/app/pages/books/pagination/floor_tools.dart';
  
 class FantasyScene extends StatefulWidget{
@@ -23,8 +25,7 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
   Map < String, Object > hot = {};
 
   LoadStatus _loadStatus = LoadStatus.LOADING;
-  GlobalKey<RefreshFooterState> _footerkey = new GlobalKey<RefreshFooterState>();
-
+  ScrollController controller ;
   int limit = 10;
   int page = 1;
   List bookList; 
@@ -34,16 +35,28 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
   @override
   void initState() {
     super.initState();
+    controller = new ScrollController();
+    controller.addListener(_onScroll);
     _initBookList();
+  }
+  _onScroll(){
+      if (controller.position.pixels == controller.position.maxScrollExtent) {
+        setState(() {
+          page++;
+        });
+        _initBookList();
+      }
   }
   Future _initBookList()async{ 
     var response = await HttpUtils.getList(this.widget.bookType,limit,page);
+    
     if(bookList != null){
         bookList.addAll(response['data']['book'] as List);
     }else{
         bookList = response['data']['book'] as List;
     }
     _loadStatus = LoadStatus.SUCCESS;
+    
     setState(() { });
   }
   @override
@@ -52,31 +65,11 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
     return _loadStatus == LoadStatus.LOADING ?
       LoadingView() :
       _loadStatus == LoadStatus.FAILURE ?
-      FailureView(this) : EasyRefresh(
-        refreshFooter: ClassicsFooter(
-          key: _footerkey,
-          bgColor: Colors.white,
-          textColor: Colors.black,
-          moreInfoColor: Colors.black,
-          loadText: '',
-          loadedText:'加载成功',
-          isFloat:true,
-          showMore: true,
-          noMoreText: '-----我也是有底线的-----',
-          loadingText:'加载中...',
-          moreInfo: '最后更新于 %T',
-          loadReadyText: '',
-          loadHeight:ScreenUtil().setHeight(70),
-        ),
-        outerController: this.widget.sc,
-        loadMore:() async {
-            page++;
-            setState(() {
-              
-            });
-            _initBookList();
-        },
+      FailureView(this) : 
+      ScrollConfiguration(
+        behavior: MyBehavior(),
         child: CustomScrollView(
+        controller:  controller,
           slivers: [
             new SliverList(
               delegate: new SliverChildBuilderDelegate(
@@ -89,6 +82,45 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
           ],
         ),
       );
+      // EasyRefresh(
+      //   refreshFooter: ClassicsFooter(
+      //     key: _footerkey,
+      //     bgColor: Colors.white,
+      //     textColor: Colors.black,
+      //     moreInfoColor: Colors.black,
+      //     loadText: '',
+      //     loadedText:'加载成功',
+      //     isFloat:true,
+      //     showMore: true,
+      //     noMoreText: '-----我也是有底线的-----',
+      //     loadingText:'加载中...',
+      //     moreInfo: '最后更新于 %T',
+      //     loadReadyText: '',
+          
+      //     loadHeight:ScreenUtil().setHeight(70),
+      //   ),
+      //   outerController: this.widget.sc,
+      //   loadMore:() async {
+      //     print("当前数据：############${bookList.length}");
+      //       page++;
+      //       setState(() {
+              
+      //       });
+      //       _initBookList();
+      //   },
+      //   child: CustomScrollView(
+      //     slivers: [
+      //       new SliverList(
+      //         delegate: new SliverChildBuilderDelegate(
+      //           (BuildContext context, int index) {
+      //             //创建列表项
+      //             return _getCompnents(index);
+      //           },
+      //         ),
+      //       )
+      //     ],
+      //   ),
+      // );
   }
 
   Widget _getCompnents(int index) {
@@ -101,6 +133,9 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
         widget = Column(
           children: _buildItem(),
         );
+        break;
+      case 2:
+        widget = MoreInfo();
         break;
     }
     return widget;
@@ -183,7 +218,6 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
         // print("=========================${item.toString()}");
         _spGetNovelIdValue().then((value){
           if(value != null && value!="" ){
-            print("${int.parse(value.split("|")[0])} +++++++++++++++++ ${item['id']}");
               if(item['id'] != int.parse(value.split("|")[0])){
                 _spSetNovelIdValue("");
               }
@@ -196,7 +230,7 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
     });
     return list;
   }
-
+  
   Future < String > _spGetNovelIdValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var value = prefs.getString('articleId');
