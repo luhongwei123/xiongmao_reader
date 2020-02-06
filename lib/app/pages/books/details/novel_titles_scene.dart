@@ -24,7 +24,7 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > with OnLoadReloa
   LoadStatus _loadStatus = LoadStatus.LOADING;
   String title;
   int page = 1;
-  GlobalKey<RefreshFooterState> _footerkey = new GlobalKey<RefreshFooterState>();
+  GlobalKey<RefreshFooterState> _footerKey = new GlobalKey<RefreshFooterState>();
 
   ScrollController controller = new ScrollController();
   @override
@@ -63,19 +63,17 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > with OnLoadReloa
       ),
       body: EasyRefresh(
         refreshFooter: ClassicsFooter(
-          key: _footerkey,
-          bgColor: Colors.white,
+          key: _footerKey,
+          bgColor:Colors.white,
           textColor: Colors.black,
           moreInfoColor: Colors.black,
-          loadText: '',
-          loadedText:'加载成功',
-          isFloat:true,
           showMore: true,
-          noMoreText: '-----我也是有底线的-----',
-          loadingText:'加载中...',
-          moreInfo: '最后更新于 %T',
-          loadReadyText: '',
-          loadHeight:ScreenUtil().setHeight(70),
+          loadText:'上拉加载更多',
+          loadedText:"加载成功",
+          loadingText:'干嘛辣么急躁...',
+          noMoreText: '加载成功',
+          moreInfo: '最近加载于 %T',
+          loadReadyText: '快给老子放手TT',
         ),
         outerController: controller,
         loadMore:() async {
@@ -101,7 +99,13 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > with OnLoadReloa
                   },
                   child: Container(
                     padding: EdgeInsets.only(left: ScreenUtil().setWidth(40)),
-                    child: Text(list[index]['name']),
+                    child: Text(list[index]['name'],
+                      style: TextStyle(
+                        fontSize:ScreenUtil().setSp(40),
+                      ),
+                      maxLines: 1,
+                      overflow:TextOverflow.ellipsis
+                    ),
                   ),
                 );
               },

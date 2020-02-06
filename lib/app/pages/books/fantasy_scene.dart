@@ -25,6 +25,7 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
   Map < String, Object > hot = {};
 
   LoadStatus _loadStatus = LoadStatus.LOADING;
+  GlobalKey<RefreshFooterState> _footerKey = new GlobalKey<RefreshFooterState>();
   ScrollController controller ;
   int limit = 10;
   int page = 1;
@@ -35,7 +36,7 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
   @override
   void initState() {
     super.initState();
-    controller = new ScrollController();
+    controller = this.widget.sc;
     controller.addListener(_onScroll);
     _initBookList();
   }
@@ -66,20 +67,35 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
       LoadingView() :
       _loadStatus == LoadStatus.FAILURE ?
       FailureView(this) : 
-      ScrollConfiguration(
+     ScrollConfiguration(
         behavior: MyBehavior(),
-        child: CustomScrollView(
-        controller:  controller,
-          slivers: [
-            new SliverList(
-              delegate: new SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  //创建列表项
-                  return _getCompnents(index);
-                },
-              ),
-            )
-          ],
+        child: EasyRefresh(
+          refreshFooter: ClassicsFooter(
+            key: _footerKey,
+            bgColor:Colors.white,
+            textColor: Colors.black,
+            moreInfoColor: Colors.black,
+            showMore: true,
+            loadText:'上拉加载更多',
+            loadedText:"加载成功",
+            loadingText:'干嘛辣么急躁...',
+            noMoreText: '加载成功',
+            moreInfo: '最近加载于 %T',
+            loadReadyText: '快给老子放手TT',
+          ),
+          child: ListView.builder(
+            padding: EdgeInsets.all(0.0),
+            itemBuilder: (context, index) {
+              return _getCompnents(index);
+            },
+            itemCount: 2,
+          ),
+          loadMore: ()async{
+            setState(() {
+              page++;
+            });
+            _initBookList();
+          },
         ),
       );
       // EasyRefresh(
@@ -134,9 +150,9 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
           children: _buildItem(),
         );
         break;
-      case 2:
-        widget = MoreInfo();
-        break;
+      // case 2:
+      //   widget = MoreInfo();
+      //   break;
     }
     return widget;
   }

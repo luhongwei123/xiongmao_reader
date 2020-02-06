@@ -1,17 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:xiongmao_reader/app/components/app_http_utils.dart';
-import 'package:xiongmao_reader/app/components/app_navigator.dart';
-import 'package:xiongmao_reader/app/components/behaver.dart';
-import 'package:xiongmao_reader/app/components/http_request.dart';
-import 'package:xiongmao_reader/app/components/load_view.dart';
-import 'package:xiongmao_reader/app/components/more_info.dart';
-import 'package:xiongmao_reader/app/pages/books/pagination/floor_tools.dart';
-import 'package:xiongmao_reader/app/pages/books/pagination/index_swiper.dart';
-import 'package:xiongmao_reader/app/pages/books/pagination/navigator_scene.dart';
+import 'package:xiongmao_reader/app/components/public.dart';
 // import 'package:xiongmao_reader/app/pages/books/pagination/recommends.dart';
 
 class HotBookScene extends StatefulWidget {
@@ -26,9 +16,10 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
   Map < String, Object > hot = {};
 
   LoadStatus _loadStatus = LoadStatus.LOADING;
-  ScrollController controller ;
+  GlobalKey<RefreshFooterState> _footerKey = new GlobalKey<RefreshFooterState>();
   int limit = 10;
   int page = 1;
+  List<Widget> widgetList = [];
   List bookList; 
 
   @override
@@ -75,22 +66,12 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
       }
     ];
     hot['title'] = ["一周热门书籍推荐", "畅销精选"];
-    controller = new ScrollController();
-    controller.addListener(_onScroll);
     _init().then((data) {
       hot['recommands'] = data;
       resp['hot'] = hot;
       _initBookList();
       _loadStatus = LoadStatus.SUCCESS;
     });
-  }
-  _onScroll(){
-      if (controller.position.pixels == controller.position.maxScrollExtent) {
-        setState(() {
-          page++;
-        });
-        _initBookList();
-      }
   }
   Future _init() async {
     var response = await HttpUtils.getHot();
@@ -154,19 +135,34 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
       FailureView(this) : 
       ScrollConfiguration(
         behavior: MyBehavior(),
-        child: CustomScrollView(
-          controller: controller,
-          slivers: [
-            new SliverList(
-              delegate: new SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  //创建列表项
-                  return _getCompnents(index);
-                },
-              ),
-            )
-          ],
-        )
+        child: EasyRefresh(
+          refreshFooter: ClassicsFooter(
+            key: _footerKey,
+            bgColor:Colors.white,
+            textColor: Colors.black,
+            moreInfoColor: Colors.black,
+            showMore: true,
+            loadText:'上拉加载更多',
+            loadedText:"加载成功",
+            loadingText:'干嘛辣么急躁...',
+            noMoreText: '加载成功',
+            moreInfo: '最近加载于 %T',
+            loadReadyText: '快给老子放手TT',
+          ),
+          child: ListView.builder(
+            padding: EdgeInsets.all(0.0),
+            itemBuilder: (context, index) {
+              return _getCompnents(index);
+            },
+            itemCount: 4,
+          ),
+          loadMore: ()async{
+            setState(() {
+              page++;
+            });
+            _initBookList();
+          },
+        ),
       );
   }
 
@@ -193,9 +189,9 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
           children: _buildItem(),
         );
         break;
-      case 4:
-        widget = MoreInfo();
-        break;
+      // case 4:
+      //   widget = MoreInfo();
+      //   break;
     }
     return widget;
   }

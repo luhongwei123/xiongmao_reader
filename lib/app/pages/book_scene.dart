@@ -112,10 +112,10 @@ class _BookSceneState extends State<BookScene>
       SliverAppBar(
         // primary: false,
         expandedHeight: ScreenUtil().setHeight(50),
-        floating: false, //不随着滑动隐藏标题
+        floating: true, //不随着滑动隐藏标题
         backgroundColor: Colors.white,
         brightness: Brightness.light,
-        pinned: false, //不固定在顶部
+        pinned: true, //不固定在顶部
         title: Row(
           children: <Widget>[
             new TextSearcher(),

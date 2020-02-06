@@ -20,3 +20,15 @@ export 'package:xiongmao_reader/app/pages/book_scene.dart';
 export 'package:xiongmao_reader/app/pages/mine_scene.dart';
 export 'package:xiongmao_reader/app/pages/recommend_scene.dart';
 export 'package:xiongmao_reader/app/pages/video_scene.dart';
+
+export 'package:flutter_screenutil/flutter_screenutil.dart';
+export 'package:shared_preferences/shared_preferences.dart';
+export 'package:xiongmao_reader/app/components/app_http_utils.dart';
+export 'package:xiongmao_reader/app/components/app_navigator.dart';
+export 'package:xiongmao_reader/app/components/behaver.dart';
+export 'package:xiongmao_reader/app/components/http_request.dart';
+export 'package:xiongmao_reader/app/components/load_view.dart';
+export 'package:xiongmao_reader/app/components/more_info.dart';
+export 'package:xiongmao_reader/app/pages/books/pagination/floor_tools.dart';
+export 'package:xiongmao_reader/app/pages/books/pagination/index_swiper.dart';
+export 'package:xiongmao_reader/app/pages/books/pagination/navigator_scene.dart';

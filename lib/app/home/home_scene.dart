@@ -92,9 +92,8 @@ class _HomeSceneState extends State < HomeScene > {
             elevation: 0,
             title: new Text("精选推荐",style: new TextStyle(color: Colors.white)),
             iconTheme: new IconThemeData(color: Colors.white),
-            // backgroundColor: Colors.amber,
             backgroundColor: AppColor.red,
-            brightness: Brightness.light,
+            brightness: Brightness.dark,
             actions: [
               IconButton(
                 padding:EdgeInsets.all(0),
