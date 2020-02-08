@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:xiongmao_reader/app/components/app_color.dart';
+import 'package:xiongmao_reader/app/components/logo.dart';
 import 'package:xiongmao_reader/app/home/home_scene.dart';
 
 class SplashPage extends StatefulWidget {
@@ -38,11 +39,8 @@ class _SplashPageState extends State < SplashPage > {
   }
   // 构建闪屏背景
   Widget _buildSplashBg() {
-    return new Image.asset(
-      'asset/template.png',
-      width: double.infinity,
-      fit: BoxFit.fill,
-      height: double.infinity,
+    return Container(
+      color: AppColor.white,
     );
   }
 
@@ -57,28 +55,8 @@ class _SplashPageState extends State < SplashPage > {
       child: new Stack(
         children: < Widget > [
           _buildSplashBg(),
-          Container(
-              alignment: Alignment.bottomRight,
-              margin: EdgeInsets.all(20.0),
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                  new MaterialPageRoute(builder: (context) => new HomeScene()
-                  ), (route) => route == null);
-                },
-                child: new Container(
-                  padding: EdgeInsets.all(12.0),
-                  child: new Text(
-                    '跳转 $_count',
-                    style: new TextStyle(fontSize: 14.0, color: Colors.black),
-                  ),
-                  decoration: new BoxDecoration(
-                    color: AppColor.paper,
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                    border: new Border.all(
-                      width: 0.33, color: Colors.grey))),
-              ),
-            ),
+          //广告位
+          Logo()
         ],
       ),
     );

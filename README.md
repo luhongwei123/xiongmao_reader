@@ -1,16 +1,4 @@
-# xiongmao_reader
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ 以下所有内容均由本人自己编写部分参考网络，仅供学习使用，未做他用。
+ 获取与共享之行为或有侵犯产品权益的嫌疑。
+ 若被告知需停止共享与使用，本人会及时删除此页面与整个项目。
+ 请您暸解相关情况，并遵守产品协议。

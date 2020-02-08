@@ -1,5 +1,5 @@
 name: xiongmao_reader
-description: A new Flutter project.
+description: i娱乐，熊猫互娱出品
 version: 1.0.1
 
 environment:
@@ -34,4 +34,3 @@ flutter:
     - asset/icon/
     - asset/readers/
     - asset/books/
-    - mock/
