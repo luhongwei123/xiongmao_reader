@@ -8,7 +8,6 @@ import 'package:xiongmao_reader/app/components/app_navigator.dart';
 import 'package:xiongmao_reader/app/components/behaver.dart';
 import 'package:xiongmao_reader/app/components/http_request.dart';
 import 'package:xiongmao_reader/app/components/load_view.dart';
-import 'package:xiongmao_reader/app/components/more_info.dart';
 import 'package:xiongmao_reader/app/pages/books/pagination/floor_tools.dart';
  
 class FantasyScene extends StatefulWidget{
