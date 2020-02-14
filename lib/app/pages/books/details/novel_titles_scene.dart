@@ -123,6 +123,5 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > with OnLoadReloa
 
   @override
   void onReload() {
-    // TODO: implement onReload
   }
 }

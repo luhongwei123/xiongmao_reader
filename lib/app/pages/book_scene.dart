@@ -37,13 +37,19 @@ class _BookSceneState extends State<BookScene>
       Tab(
         text: "历史",
       ),
-      Tab(
-        text: "其他",
-      )
+      // Tab(
+      //   text: "其他",
+      // )
     ];
     controller =
         TabController(initialIndex: 0, length: tabs.length, vsync: this);
     sc = new ScrollController();
+  }
+  @override
+  void dispose() {
+    controller.dispose();
+    sc.dispose();
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -63,7 +69,7 @@ class _BookSceneState extends State<BookScene>
             FantasyScene(sc: sc,bookType: "修真小说",title: "极品修真等你开启"),//修真
             FantasyScene(sc: sc,bookType: "游戏小说",title: "热门游戏同人大作"),//游戏
             FantasyScene(sc: sc,bookType: "历史小说",title: "带你走进不一样的历史长河"),//历史
-            FantasyScene(sc: sc,bookType: "其他小说",title: "其他精心整理推荐"),//其他
+            // FantasyScene(sc: sc,bookType: "其他小说",title: "其他精心整理推荐"),//其他
         ]),
       ),
     );
@@ -106,7 +112,6 @@ class _BookSceneState extends State<BookScene>
       preferredSize: Size.fromHeight(20),
     );
   }
-
   List<Widget> _sliverBuilder(BuildContext context, bool innerBoxIsScrolled) {
     return <Widget>[
       SliverAppBar(

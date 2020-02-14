@@ -66,64 +66,70 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
       }
     ];
     hot['title'] = ["一周热门书籍推荐", "畅销精选"];
-    _init().then((data) {
-      hot['recommands'] = data;
-      resp['hot'] = hot;
-      _initBookList();
-      _loadStatus = LoadStatus.SUCCESS;
-    });
+    // _init().then((data) {
+    // hot['recommands'] = data;
+    resp['hot'] = hot;
+    _initBookList();
+    
+    // });
   }
-  Future _init() async {
-    var response = await HttpUtils.getHot();
-    List list = response['data']['book'] as List;
-    Map recommands = {};
-    recommands['firstRecommands'] = {
-      "url": Request.baseImageUrl+'${list[0]['id']}',
-      "name": list[0]['name'],
-      "summary": list[0]['description'],
-      "author": list[0]['author'],
-      "id": list[0]['id'],
-    };
-    recommands['otherRecommands'] = [{
-        "url": Request.baseImageUrl+'${list[1]['id']}',
-        "summary": list[1]['description'],
-        "author": list[1]['author'],
-        "name": list[1]['name'],
-        "id": list[1]['id']
-      },
-      {
-        "url": Request.baseImageUrl+'${list[2]['id']}',
-        "summary": list[2]['description'],
-        "author": list[2]['author'],
-        "name": list[2]['name'],
-        "id": list[2]['id']
-      },
-      {
-        "url": Request.baseImageUrl+'${list[3]['id']}',
-        "summary": list[3]['description'],
-        "author": list[3]['author'],
-        "name": list[3]['name'],
-        "id": list[3]['id']
-      },
-      {
-        "url": Request.baseImageUrl+'${list[4]['id']}',
-        "summary": list[4]['description'],
-        "author": list[4]['author'],
-        "name": list[4]['name'],
-        "id": list[4]['id']
-      },
-    ];
-    return recommands;
-  }
+  // Future _init() async {
+  //   var response = await HttpUtils.getHot();
+  //   List list = response['data']['book'] as List;
+  //   Map recommands = {};
+  //   recommands['firstRecommands'] = {
+  //     "url": Request.baseImageUrl+'${list[0]['id']}',
+  //     "name": list[0]['name'],
+  //     "summary": list[0]['description'],
+  //     "author": list[0]['author'],
+  //     "id": list[0]['id'],
+  //   };
+  //   recommands['otherRecommands'] = [{
+  //       "url": Request.baseImageUrl+'${list[1]['id']}',
+  //       "summary": list[1]['description'],
+  //       "author": list[1]['author'],
+  //       "name": list[1]['name'],
+  //       "id": list[1]['id']
+  //     },
+  //     {
+  //       "url": Request.baseImageUrl+'${list[2]['id']}',
+  //       "summary": list[2]['description'],
+  //       "author": list[2]['author'],
+  //       "name": list[2]['name'],
+  //       "id": list[2]['id']
+  //     },
+  //     {
+  //       "url": Request.baseImageUrl+'${list[3]['id']}',
+  //       "summary": list[3]['description'],
+  //       "author": list[3]['author'],
+  //       "name": list[3]['name'],
+  //       "id": list[3]['id']
+  //     },
+  //     {
+  //       "url": Request.baseImageUrl+'${list[4]['id']}',
+  //       "summary": list[4]['description'],
+  //       "author": list[4]['author'],
+  //       "name": list[4]['name'],
+  //       "id": list[4]['id']
+  //     },
+  //   ];
+  //   return recommands;
+  // }
 
   Future _initBookList()async{ 
-    var response = await HttpUtils.getList(null,limit,page);
-    if(bookList != null){
+    await HttpUtils.getList(null,limit,page).then((response) {
+      if(bookList != null){
         bookList.addAll(response['data']['book'] as List);
-    }else{
+      }else{
         bookList = response['data']['book'] as List;
-    }
-    setState(() { });
+      }
+      _loadStatus = LoadStatus.SUCCESS;
+      setState((){});
+    }).catchError((e){
+      _loadStatus = LoadStatus.FAILURE;  
+      setState((){});
+    });
+    
   }
 
   @override
@@ -295,5 +301,10 @@ class _HotBookScene extends State < HotBookScene > with AutomaticKeepAliveClient
     await prefs.setString('articleId', value);
   }
   @override
-  void onReload() {}
+  void onReload() {
+    setState(() {
+      _loadStatus = LoadStatus.LOADING;
+    });
+    _initBookList();
+  }
 }

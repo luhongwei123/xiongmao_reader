@@ -103,7 +103,7 @@ class _FailureViewState extends State<FailureView> {
             height: 14,
           ),
           Text(
-            "咦？没网络啦~检查下设置吧",
+            "咦？检查下设置吧",
             style: TextStyle(fontSize: 12, color: AppColor.textBlack9),
           ),
           SizedBox(

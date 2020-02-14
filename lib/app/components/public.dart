@@ -32,3 +32,14 @@ export 'package:xiongmao_reader/app/components/more_info.dart';
 export 'package:xiongmao_reader/app/pages/books/pagination/floor_tools.dart';
 export 'package:xiongmao_reader/app/pages/books/pagination/index_swiper.dart';
 export 'package:xiongmao_reader/app/pages/books/pagination/navigator_scene.dart';
+
+export 'package:xiongmao_reader/app/home/home_scene.dart';
+export 'package:xiongmao_reader/app/pages/books/details/novel_detail_scene.dart';
+export 'package:xiongmao_reader/app/pages/books/details/novel_titles_scene.dart';
+export 'package:xiongmao_reader/app/pages/books/reader/novel_reader_scene.dart';
+export 'package:xiongmao_reader/app/pages/recommends/little_tools/weather_scene.dart';
+
+
+
+
+export 'package:city_pickers/city_pickers.dart';

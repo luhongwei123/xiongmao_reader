@@ -25,8 +25,27 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+def keystorePropertiesFile = rootProject.file("key.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdkVersion 28
+
+    signingConfigs {
+        debug {
+            keyAlias 'android.keystore'
+            keyPassword 'Aa567654112'
+            storeFile file('key/android.keystore')
+            storePassword 'Aa567654112'
+        }
+        release {
+            keyAlias 'android.keystore'
+            keyPassword 'Aa567654112'
+            storeFile file('key/android.keystore')
+            storePassword 'Aa567654112'
+        }
+    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -37,7 +56,9 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        manifestPlaceholders = [
+                AMAP_KEY : "8c25000207844e854f51e67a8322ecca", 
+        ]
         applicationId "com.example.xiongmao_reader"
         minSdkVersion 16
         targetSdkVersion 28
@@ -64,4 +85,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation 'com.amap.api:location:latest.integration'
 }

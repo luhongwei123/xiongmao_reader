@@ -1,6 +1,6 @@
 name: xiongmao_reader
 description: i娱乐，熊猫互娱出品
-version: 1.0.1
+version: 1.0.2
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -20,6 +20,9 @@ dependencies:
   flutter_cache_manager: ^1.0.0
   flutter_easyrefresh: ^1.2.7
   flutter_html: ^0.11.1
+  city_pickers: ^0.1.30
+  amap_location: ^0.2.0
+  permission_handler: ^3.2.0 
 
 dev_dependencies:
   flutter_test:
@@ -34,3 +37,5 @@ flutter:
     - asset/icon/
     - asset/readers/
     - asset/books/
+    - asset/recommends/
+    - asset/recommends/weather/

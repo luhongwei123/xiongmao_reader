@@ -1,10 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:xiongmao_reader/app/home/home_scene.dart';
-import 'package:xiongmao_reader/app/model/article_model.dart';
-import 'package:xiongmao_reader/app/pages/books/details/novel_detail_scene.dart';
-import 'package:xiongmao_reader/app/pages/books/details/novel_titles_scene.dart';
-import 'package:xiongmao_reader/app/pages/books/reader/novel_reader_scene.dart';
+import 'package:xiongmao_reader/app/components/public.dart';
 
 class AppNavigator {
   static push(BuildContext context, Widget scene) {
@@ -37,5 +32,13 @@ class AppNavigator {
    */
   static toNovelReaders(BuildContext context,Article article,Map map,int index){
       AppNavigator.push(context, NovelReaderScene(index,article:article,map: map));
+  }
+
+
+  /*
+   * 跳转到小说阅读页面
+   */
+  static toWeather(BuildContext context){
+      AppNavigator.push(context, WeatherScene());
   }
 }

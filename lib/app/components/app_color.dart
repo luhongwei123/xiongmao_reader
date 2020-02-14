@@ -44,4 +44,6 @@ class AppColor{
     static final Color meTextColor = Color(0xFF85682F);
     static final Color meRedTextColor = Color(0xFFFF7634);
     static final Color paginationColor = Color(0xFFD8D8D8);
+
+    static final Color weather = Color(0xff8a8a8a);
 }

@@ -48,16 +48,18 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
       }
   }
   Future _initBookList()async{ 
-    var response = await HttpUtils.getList(this.widget.bookType,limit,page);
-    
-    if(bookList != null){
+    await HttpUtils.getList(this.widget.bookType,limit,page).then((response){
+      if(bookList != null){
         bookList.addAll(response['data']['book'] as List);
-    }else{
-        bookList = response['data']['book'] as List;
-    }
-    _loadStatus = LoadStatus.SUCCESS;
-    
-    setState(() { });
+      }else{
+          bookList = response['data']['book'] as List;
+      }
+      _loadStatus = LoadStatus.SUCCESS;
+      setState(() { });
+    }).catchError((e){
+      _loadStatus = LoadStatus.FAILURE;
+      setState(() {});
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -257,6 +259,9 @@ class _FantasySceneState extends State<FantasyScene> with AutomaticKeepAliveClie
   }
   @override
   void onReload() {
-    // TODO: implement onReload
+    setState(() {
+      _loadStatus = LoadStatus.LOADING;
+    });
+    _initBookList();
   }
 }

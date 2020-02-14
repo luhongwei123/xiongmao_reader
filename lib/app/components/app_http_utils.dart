@@ -17,9 +17,7 @@ class HttpUtils{
       try{
         response  = await dio.get(path,queryParameters: params);
       }catch(e){
-
-        print(e);
-        return 'error';
+        return e;
       }
       var data = response.data;
       return json.decode(data);
@@ -35,7 +33,7 @@ class HttpUtils{
       try{
         response  = await dio.get(path,queryParameters: params);
       }catch(e){
-        return 'error';
+        return e;
       }
       var data = response.data;
       return json.decode(data);
@@ -52,7 +50,7 @@ class HttpUtils{
       try{
         response  = await dio.get(path,queryParameters: params);
       }catch(e){
-        return 'error';
+        return e;
       }
       var data = response.data;
       return json.decode(data);
@@ -69,7 +67,7 @@ class HttpUtils{
       try{
         response  = await dio.get(path,queryParameters: params);
       }catch(e){
-        return 'error';
+        return e;
       }
       var data = response.data;
       return json.decode(data);
@@ -87,9 +85,7 @@ class HttpUtils{
       try{
         response  = await dio.get(path,queryParameters: params);
       }catch(e){
-
-        print(e);
-        return 'error';
+        return e;
       }
       var data = response.data;
       return json.decode(data);
@@ -106,9 +102,7 @@ class HttpUtils{
       try{
         response  = await dio.get(path,queryParameters: params);
       }catch(e){
-
-        print(e);
-        return 'error';
+        return e;
       }
       var data = response.data;
       return json.decode(data);

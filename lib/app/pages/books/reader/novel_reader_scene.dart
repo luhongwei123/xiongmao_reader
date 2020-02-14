@@ -55,11 +55,12 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
     );
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
 
-    _controller = new ScrollController(
-        initialScrollOffset: 0, keepScrollOffset: false);
-      _controller.addListener(() {
-        _offset = _controller.offset;
-      });
+    _controller = new ScrollController(initialScrollOffset: 0, keepScrollOffset: false);
+    
+    _controller.addListener(() {
+      _offset = _controller.offset;
+      _spSetOffsetValue(_offset);
+    });
       
     _spGetTextSizeValue().then((value) {
       // setState(() {
@@ -88,13 +89,16 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
     });
   }
   getNovels(String id) async {
-    _spSetNovelIdValue(id+"|${page}");
-     var response = await HttpUtils.getCatalogList(id, page);
-     
-     List list = response['data']['catalog'] as List;
-    //  print("返回数据:${list.toString()}");
-     //查询章节详细信息
-     getData(list[0]);
+    _spSetNovelIdValue(id + "|${page}");
+    await HttpUtils.getCatalogList(id, page).then((response) {
+      List list = response['data']['catalog'] as List;
+      //查询章节详细信息
+      getData(list[0]);
+    }).catchError((e) {
+      setState(() {
+        _loadStatus = LoadStatus.FAILURE;
+      });
+    });
   }
   Future < double > _spGetSpaceValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -115,13 +119,17 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
   }
 
   void getData(Map data) async {
-    var response = await HttpUtils.getCatalog(data['bookId'], data['id'], data['num']);
-    // print("===================+${response['data'].toString()}");
-    novel = Novel.fromJson(response['data']);
-    _content = novel.contentAttr;
-    _title = novel.title;
-    _loadStatus = LoadStatus.SUCCESS;
-    setState(() {  });
+    await HttpUtils.getCatalog(data['bookId'], data['id'], data['num']).then((response) {
+      novel = Novel.fromJson(response['data']);
+      _content = novel.contentAttr;
+      _title = novel.title;
+      _loadStatus = LoadStatus.SUCCESS;
+      setState(() {});
+    }).catchError((e) {
+      setState(() {
+        _loadStatus = LoadStatus.FAILURE;
+      });
+    });
   }
 
   @override
@@ -254,7 +262,10 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
 
   @override
   void onReload() {
-
+    setState(() {
+      _loadStatus = LoadStatus.LOADING;
+    });
+    getNovels("${novel.novelId}");
   }
 
   hideMenu() {
@@ -459,16 +470,15 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
               ],
             ),
           ),
-
-          Container(
-            decoration: BoxDecoration(color: _isNighttime ? Color(0xFF333333) : Color(0xFFF5F5F5)),
-            padding: EdgeInsets.only(bottom: ScreenUtil.bottomBarHeight),
-            child: Column(
-              children: < Widget > [
-                buildBottomMenus(),
-              ],
-            ),
-          )
+          // Container(
+          //   decoration: BoxDecoration(color: _isNighttime ? Color(0xFF333333) : Color(0xFFF5F5F5)),
+          //   padding: EdgeInsets.only(bottom: ScreenUtil.bottomBarHeight),
+          //   child: Column(
+          //     children: < Widget > [
+          //       buildBottomMenus(),
+          //     ],
+          //   ),
+          // )
         ],
       ),
     );
@@ -478,6 +488,11 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('articleId', value);
   }
+  _spSetOffsetValue(double value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('offset', value);
+  }
+
   _spSetTextSizeValue(double value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setDouble('textSizeValue', value);
