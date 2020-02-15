@@ -54,13 +54,17 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
       statusBarBrightness: _isNighttime ? Brightness.dark : Brightness.light
     );
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-
+    // _spGetOffsetValue().then((value) {
+    //   if (value != null) {
+    //     _controller = new ScrollController(initialScrollOffset: value, keepScrollOffset: false);
+      // } else {
     _controller = new ScrollController(initialScrollOffset: 0, keepScrollOffset: false);
-    
+    // }
     _controller.addListener(() {
       _offset = _controller.offset;
-      _spSetOffsetValue(_offset);
+      // _spSetOffsetValue(_offset);
     });
+    // });
       
     _spGetTextSizeValue().then((value) {
       // setState(() {
@@ -115,6 +119,12 @@ class _NovelReaderSceneState extends State < NovelReaderScene > with OnLoadReloa
   Future < String > _spGetNovelIdValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var value = prefs.getString('articleId');
+    return value ;
+  }
+
+  Future < double > _spGetOffsetValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var value = prefs.getDouble('offset');
     return value ;
   }
 

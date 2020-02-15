@@ -14,11 +14,11 @@ class HttpUtils{
       var dio = Request.getDio();
       String path = Request.baseUrl + 'list';
       Response<String> response ;
-      try{
+      // try{
         response  = await dio.get(path,queryParameters: params);
-      }catch(e){
-        return e;
-      }
+      // }catch(e){
+      //   return e;
+      // }
       var data = response.data;
       return json.decode(data);
   }
@@ -30,11 +30,11 @@ class HttpUtils{
       var dio = Request.getDio();
       String path = Request.baseUrl + 'catalogList';
       Response<String> response ;
-      try{
+      // try{
         response  = await dio.get(path,queryParameters: params);
-      }catch(e){
-        return e;
-      }
+      // }catch(e){
+      //   return e;
+      // }
       var data = response.data;
       return json.decode(data);
   }
@@ -47,11 +47,11 @@ class HttpUtils{
       var dio = Request.getDio();
       String path = Request.baseUrl + 'catalogList';
       Response<String> response ;
-      try{
+      // try{
         response  = await dio.get(path,queryParameters: params);
-      }catch(e){
-        return e;
-      }
+      // }catch(e){
+      //   return e;
+      // }
       var data = response.data;
       return json.decode(data);
   }
@@ -64,11 +64,11 @@ class HttpUtils{
       var dio = Request.getDio();
       String path = Request.baseUrl + 'catalog';
       Response<String> response ;
-      try{
+      // try{
         response  = await dio.get(path,queryParameters: params);
-      }catch(e){
-        return e;
-      }
+      // }catch(e){
+      //   return e;
+      // }
       var data = response.data;
       return json.decode(data);
   }
@@ -82,14 +82,15 @@ class HttpUtils{
       var dio = Request.getDio();
       String path = Request.baseUrl + 'list';
       Response<String> response ;
-      try{
+      // try{
         response  = await dio.get(path,queryParameters: params);
-      }catch(e){
-        return e;
-      }
+      // }catch(e){
+      //   return e;
+      // }
       var data = response.data;
       return json.decode(data);
   }
+
   static Future getRecentBook(int bookId) async{
       Map<String,Object> params = {};
       params['isRandom'] = false;
@@ -99,12 +100,36 @@ class HttpUtils{
       var dio = Request.getDio();
       String path = Request.baseUrl + 'list';
       Response<String> response ;
-      try{
+      // try{
         response  = await dio.get(path,queryParameters: params);
-      }catch(e){
-        return e;
-      }
+      // }catch(e){
+      //   return e;
+      // }
       var data = response.data;
       return json.decode(data);
+  }
+
+
+  //获取当前城市天气
+  static Future getCurrentWeather(String cityName) async{
+    Map<String,Object> params = {};
+    params['app_id'] = Request.app_id;
+    params['app_secret'] = Request.app_secret;
+    var dio = Request.getDio();
+    String path = Request.baseApi + '/weather/current/'+cityName;
+    Response<String>  response  = await dio.get(path,queryParameters: params);
+    var data = response.data;
+    return json.decode(data);
+  }
+  //获取当前城市未来天气
+  static Future getForecastWeather(String cityName) async{
+    Map<String,Object> params = {};
+    params['app_id'] = Request.app_id;
+    params['app_secret'] = Request.app_secret;
+    var dio = Request.getDio();
+    String path = Request.baseApi + '/weather/forecast/'+cityName;
+    Response<String>  response  = await dio.get(path,queryParameters: params);
+    var data = response.data;
+    return json.decode(data);
   }
 }

@@ -43,3 +43,6 @@ export 'package:xiongmao_reader/app/pages/recommends/little_tools/weather_scene.
 
 
 export 'package:city_pickers/city_pickers.dart';
+
+export 'package:xiongmao_reader/app/model/weather_current.dart';
+export 'package:xiongmao_reader/app/model/weather_focast.dart';

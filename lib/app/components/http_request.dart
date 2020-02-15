@@ -12,6 +12,10 @@ class Request {
   static const String baseUrl = 'http://175.24.134.140:1111/api/';
   static const String baseImageUrl = 'http://175.24.134.140:3000/images/';
 
+  static const String baseApi = "https://www.mxnzp.com/api";
+  static const String app_id = "qgocoridmpliotoi";
+  static const String app_secret = "eDZYS1ZpRlRLTGRwNE5udHNXSlRFQT09";
+
   static Future<dynamic> get({String url, Map params}) async {
     return Request.mock(url: url, params: params);
   }
