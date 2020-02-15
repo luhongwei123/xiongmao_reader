@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xiongmao_reader/app/components/public.dart';
+import 'package:xiongmao_reader/app/pages/recommends/games/game_2048.dart';
 
 class AppNavigator {
   static push(BuildContext context, Widget scene) {
@@ -40,5 +41,9 @@ class AppNavigator {
    */
   static toWeather(BuildContext context){
       AppNavigator.push(context, WeatherScene());
+  }
+  
+  static toGame_2048(BuildContext context){
+      AppNavigator.push(context, GameScene());
   }
 }

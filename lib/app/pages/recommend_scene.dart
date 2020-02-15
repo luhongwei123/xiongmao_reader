@@ -20,7 +20,7 @@ class _RecommendSceneState extends State<RecommendScene> {
       behavior: MyBehavior(),
       child: ListView(
         children: <Widget>[
-          FloorTitle(title: "实用工具集合"),
+          FloorTitle(title: "实用集合"),
           Container(
             child: GridView.count(
               crossAxisCount: 5,
@@ -29,7 +29,17 @@ class _RecommendSceneState extends State<RecommendScene> {
               padding: EdgeInsets.all(5),
               children: _buildNavigator(context),
             ),
-          )
+          ),
+          FloorTitle(title: "轻松一刻"),
+          Container(
+            child: GridView.count(
+              crossAxisCount: 5,
+              physics: new NeverScrollableScrollPhysics(), //增加
+              shrinkWrap: true, //增加
+              padding: EdgeInsets.all(5),
+              children: _buildGames(context),
+            ),
+          ),
         ],
       )
     );
@@ -77,10 +87,6 @@ class _RecommendSceneState extends State<RecommendScene> {
     }
     return appbar;
   }
-  _onClickWeather(BuildContext context) async{
-    // Result result = await CityPickers.showFullPageCityPicker(context: context);
-    // Fluttertoast.showToast(msg: result.toString());
-  }
   List<Widget> _buildNavigator(BuildContext context) {
     List<Widget> list = [];
     // list.add(FloorTitle(title: "实用工具",));
@@ -95,6 +101,7 @@ class _RecommendSceneState extends State<RecommendScene> {
         children: <Widget>[
           Image.asset("asset/recommends/tianqi.png",
               width: ScreenUtil().setWidth(80)),
+          SizedBox(height:10),
           Text('今日天气'),
         ],
       ),
@@ -108,6 +115,7 @@ class _RecommendSceneState extends State<RecommendScene> {
         children: <Widget>[
           Image.asset("asset/recommends/kaixin.png",
               width: ScreenUtil().setWidth(80)),
+          SizedBox(height:10),
           Text('开心一刻'),
         ],
       ),
@@ -121,6 +129,7 @@ class _RecommendSceneState extends State<RecommendScene> {
         children: <Widget>[
           Image.asset("asset/recommends/news.png",
               width: ScreenUtil().setWidth(80)),
+          SizedBox(height:10),
           Text('今日头条'),
         ],
       ),
@@ -134,6 +143,7 @@ class _RecommendSceneState extends State<RecommendScene> {
         children: <Widget>[
           Image.asset("asset/recommends/laji.png",
               width: ScreenUtil().setWidth(80)),
+          SizedBox(height:10),
           Text('垃圾分类'),
         ],
       ),
@@ -147,11 +157,34 @@ class _RecommendSceneState extends State<RecommendScene> {
         children: <Widget>[
           Image.asset("asset/recommends/kuaidi.png",
               width: ScreenUtil().setWidth(80)),
+          SizedBox(height:10),
           Text('快递查询'),
         ],
       ),
     );
     list.add(kuaidi);
+    return list;
+  }
+
+  List<Widget> _buildGames(BuildContext context) {
+    List<Widget> list = [];
+    // list.add(FloorTitle(title: "实用工具",));
+    var game_2048 = InkWell(
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      onTap: () {
+        AppNavigator.toGame_2048(context);
+      },
+      child: Column(
+        children: <Widget>[
+          Image.asset("asset/recommends/2048.png",
+              width: ScreenUtil().setWidth(80)),
+          SizedBox(height:10),
+          Text('2048'),
+        ],
+      ),
+    );
+    list.add(game_2048);
     return list;
   }
 }
