@@ -46,4 +46,8 @@ class AppNavigator {
   static toGame_2048(BuildContext context){
       AppNavigator.push(context, GameScene());
   }
+  
+  static toVideo(BuildContext context){
+      AppNavigator.push(context, VideoScene());
+  }
 }

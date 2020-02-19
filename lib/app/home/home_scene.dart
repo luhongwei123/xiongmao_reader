@@ -47,9 +47,13 @@ class _HomeSceneState extends State < HomeScene > {
       bottomNavigationBar: CupertinoTabBar(
         currentIndex: _index,
         onTap: (index) {
-          setState(() {
-            _index = index;
-          });
+          // if(index == 2){
+          //   AppNavigator.toVideo(context);
+          // }else{
+            setState(() {
+              _index = index;
+            });
+          // }
         },
         items: [
           BottomNavigationBarItem(

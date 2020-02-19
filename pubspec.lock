@@ -385,6 +385,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.8"
+  webview_plugin:
+    dependency: "direct main"
+    description:
+      path: webview_plugin
+      relative: true
+    source: path
+    version: "0.0.1"
   xml:
     dependency: transitive
     description:
