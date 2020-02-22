@@ -87,17 +87,16 @@ class _VideoSceneState extends State<VideoScene> with OnLoadReloadListener{
         ),
         RaisedButton(
           onPressed: () {
-            // login();\
             secondTextFieldNode.unfocus();
-            if(passController.text =='Aa567654112'){
-                flutterWebviewPlugin.launch("https://福利之家.com/?addfb", (data) {},rect: new Rect.fromLTWH(
+            // if(passController.text =='Aa567654112'){
+                flutterWebviewPlugin.launch("www.baidu.com", (data) {},rect: new Rect.fromLTWH(
                       0.0,
                       0.0,
                       MediaQuery.of(context).size.width,
                       MediaQuery.of(context).size.height));
-            }else{
-              Fluttertoast.showToast(msg: "暂时没有开发呢呦！");
-            }
+            // }else{
+            //   Fluttertoast.showToast(msg: "暂时没有开发呢呦！");
+            // }
           },
           color: new Color(0xffFE9A18),
           child: new Text(
