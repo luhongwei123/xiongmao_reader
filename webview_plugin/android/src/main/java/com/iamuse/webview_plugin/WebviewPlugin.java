@@ -3,6 +3,7 @@ package com.iamuse.webview_plugin;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +82,7 @@ public class WebviewPlugin implements MethodChannel.MethodCallHandler {
         titleView.setPadding(dp2px(activity,10),dp2px(activity,20),dp2px(activity,10),0);
         ViewGroup.LayoutParams titleViewParams= new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
         titleView.setLayoutParams(titleViewParams);
-        titleView.setText("我是标题");
+        titleView.setText("");
         titleView.setGravity(Gravity.CENTER);
         ViewGroup.LayoutParams layoutParams= new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,dp2px(activity,70));
         titleView.setLayoutParams(layoutParams);
@@ -88,8 +90,22 @@ public class WebviewPlugin implements MethodChannel.MethodCallHandler {
         linearLayout.addView(titleView);
         linearLayout.addView(webView);
         activity.addContentView(linearLayout, params);
-        webView.setWebViewClient(new MyWebViewClient(activity, (title, isError) -> titleView.setText(title)));
 
+        webView.setWebViewClient(new MyWebViewClient(activity, (title, isError) -> titleView.setText(title)));
+        webView.setOnKeyListener(new View.OnKeyListener() {
+          @Override
+          public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+              //按返回键操作并且能回退网页
+              if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
+                //后退
+                webView.goBack();
+                return true;
+              }
+            }
+            return false;
+          }
+        });
         webView.setWebChromeClient(new WebChromeClient() {
 
           /*** 视频播放相关的方法 **/
@@ -119,6 +135,7 @@ public class WebviewPlugin implements MethodChannel.MethodCallHandler {
             setStatusBarVisibility(true);
             FrameLayout decor = (FrameLayout) activity.getWindow().getDecorView();
             decor.removeView(fullscreenContainer);
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             fullscreenContainer = null;
             customView = null;
             customViewCallback.onCustomViewHidden();
@@ -133,7 +150,7 @@ public class WebviewPlugin implements MethodChannel.MethodCallHandler {
             }
 
             activity.getWindow().getDecorView();
-
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             FrameLayout decor = (FrameLayout) activity.getWindow().getDecorView();
             fullscreenContainer = new FullscreenHolder(activity);
             fullscreenContainer.addView(view, COVER_SCREEN_PARAMS);
@@ -163,7 +180,6 @@ public class WebviewPlugin implements MethodChannel.MethodCallHandler {
         });
         webView.loadUrl(call.argument("url").toString());
     }
-
   }
 
 

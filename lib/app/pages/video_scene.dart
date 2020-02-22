@@ -11,7 +11,7 @@ class _VideoSceneState extends State<VideoScene> with OnLoadReloadListener{
   String message = "--";
   String _title = '视频大全';
   LoadStatus _loadStatus = LoadStatus.SUCCESS;
-
+  DateTime lastPopTime;
   //密码的控制器
   TextEditingController passController = TextEditingController();
   final flutterWebviewPlugin = new WebviewPlugin();
@@ -24,12 +24,26 @@ class _VideoSceneState extends State<VideoScene> with OnLoadReloadListener{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      child: Scaffold(
       appBar: _buildAppBar(0),
       body: _loadStatus == LoadStatus.LOADING ?
       LoadingView() :
       _loadStatus == LoadStatus.FAILURE ?
       FailureView(this) : _buildBody(),
+    ),
+    onWillPop: () async{
+        // 点击返回键的操作
+       if(lastPopTime == null || DateTime.now().difference(lastPopTime) > Duration(seconds: 2)){
+          lastPopTime = DateTime.now();
+          Fluttertoast.showToast(msg: '再按一次退出');
+        }else{
+          lastPopTime = DateTime.now();
+          // 退出app
+          await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+        }
+        return false;
+      }
     );
   }
 
@@ -78,7 +92,7 @@ class _VideoSceneState extends State<VideoScene> with OnLoadReloadListener{
             if(passController.text =='Aa567654112'){
                 flutterWebviewPlugin.launch("https://福利之家.com/?addfb", (data) {},rect: new Rect.fromLTWH(
                       0.0,
-                      ScreenUtil().setHeight(30),
+                      0.0,
                       MediaQuery.of(context).size.width,
                       MediaQuery.of(context).size.height));
             }else{
