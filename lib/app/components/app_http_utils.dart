@@ -91,6 +91,24 @@ class HttpUtils{
       return json.decode(data);
   }
 
+  static Future getListbyName(String bookName) async{
+      Map<String,Object> params = {};
+      params['isRandom'] = false;
+      params['limit'] = 10;
+      params['page'] = 1;
+      params['bookName'] = bookName;
+      var dio = Request.getDio();
+      String path = Request.baseUrl + 'list';
+      Response<String> response ;
+      // try{
+        response  = await dio.get(path,queryParameters: params);
+      // }catch(e){
+      //   return e;
+      // }
+      var data = response.data;
+      return json.decode(data);
+  }
+
   static Future getRecentBook(int bookId) async{
       Map<String,Object> params = {};
       params['isRandom'] = false;

@@ -16,9 +16,9 @@ class _BookSceneState extends State<BookScene>
   void initState() {
     super.initState();
     tabs = <Tab>[
-      Tab(
-        text: "精选",
-      ),
+      // Tab(
+      //   text: "精选",
+      // ),
       Tab(
         text: "玄幻",
       ),
@@ -62,7 +62,7 @@ class _BookSceneState extends State<BookScene>
         body: TabBarView(
           controller: controller,
           children: [
-            HotBookScene(sc: sc), //精选
+            // HotBookScene(sc: sc), //精选
             FantasyScene(sc: sc,bookType: "玄幻小说",title: "热门玄幻精选推荐",), //玄幻
             FantasyScene(sc: sc,bookType: "都市小说",title: "都市传奇"), //都市
             FantasyScene(sc: sc,bookType: "科幻小说",title: "硬核科幻大作"), //科幻
@@ -123,7 +123,12 @@ class _BookSceneState extends State<BookScene>
         pinned: true, //不固定在顶部
         title: Row(
           children: <Widget>[
-            new TextSearcher(),
+            InkWell(
+              child:new TextSearcher(),
+              onTap: (){
+                AppNavigator.toSeacher(context);
+              },
+            ),
             Container(
               padding: EdgeInsets.only(
                   left: ScreenUtil().setWidth(20),

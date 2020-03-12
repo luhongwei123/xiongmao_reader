@@ -170,6 +170,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_xupdate:
+    dependency: "direct main"
+    description:
+      name: flutter_xupdate
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.2"
   fluttertoast:
     dependency: "direct main"
     description:
@@ -385,6 +392,27 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.8"
+  video_player:
+    dependency: "direct main"
+    description:
+      name: video_player
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.10.8+1"
+  video_player_platform_interface:
+    dependency: transitive
+    description:
+      name: video_player_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.5"
+  video_player_web:
+    dependency: transitive
+    description:
+      name: video_player_web
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.2+1"
   webview_plugin:
     dependency: "direct main"
     description:

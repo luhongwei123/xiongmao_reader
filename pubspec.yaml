@@ -26,6 +26,9 @@ dependencies:
   permission_handler: ^3.2.0
   webview_plugin:
      path: webview_plugin/
+  video_player: ^0.10.8+1
+  flutter_xupdate: ^0.0.2
+
       
 dev_dependencies:
   flutter_test:
@@ -37,6 +40,7 @@ flutter:
 
   assets:
     - asset/
+    - asset/me/
     - asset/icon/
     - asset/readers/
     - asset/books/

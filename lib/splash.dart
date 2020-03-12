@@ -1,13 +1,9 @@
 import 'dart:async';
-
-import 'package:amap_location/amap_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:xiongmao_reader/app/components/app_color.dart';
-import 'package:xiongmao_reader/app/components/logo.dart';
-import 'package:xiongmao_reader/app/home/home_scene.dart';
+
+import 'package:video_player/video_player.dart';
+import 'package:xiongmao_reader/app/components/public.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -16,53 +12,84 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State < SplashPage > {
 
-  int _count = 3; // 倒计时秒数
-  Timer _timer;
-
+  VideoPlayerController _controller;
+  Future _initializeVideoPlayerFuture;
   @override
   void initState() {
     super.initState();
-     SystemChrome.setPreferredOrientations([
+    SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown
     ]);
-    _timer = Timer.periodic(new Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_count <= 0) {
-          _timer.cancel();
-          _timer = null;
-          Navigator.of(context).pushAndRemoveUntil(
-                  new MaterialPageRoute(builder: (context) => new HomeScene()
-                  ), (route) => route == null);
-        } else {
-          _count = _count - 1;
-        }
-      });
+    _controller = VideoPlayerController.asset('asset/qidong.mp4');
+    _controller.setLooping(true);
+    _controller.setVolume(100); 
+
+    setState(() {
+      _controller.play();
     });
-  }
-  
-  // 构建闪屏背景
-  Widget _buildSplashBg() {
-    return Container(
-      color: AppColor.white,
-    );
+    _initializeVideoPlayerFuture = _controller.initialize();
   }
 
   @override
   void dispose() {
     super.dispose();
+    _controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Material(
-      child: new Stack(
-        children: < Widget > [
-          _buildSplashBg(),
-          //广告位
-          Logo()
-        ],
-      ),
+    return Stack(
+      fit: StackFit.expand,
+      children: < Widget > [
+        FutureBuilder(
+          future: _initializeVideoPlayerFuture,
+          builder: (context, snapshot) {
+            print(snapshot.connectionState);
+
+            if (snapshot.hasError) print(snapshot.error);
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Transform.scale(
+                scale: _controller.value.aspectRatio /
+                MediaQuery.of(context).size.aspectRatio,
+                child: AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  // aspectRatio: _controller.value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                ),
+              );
+            } else {
+              return Center(
+                child: Container(),
+              );
+            }
+          },
+        ),
+        Positioned(
+          left: 135,
+          bottom: 120,
+          child: RaisedButton(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            color: Colors.transparent,
+            disabledElevation:0,
+            textColor: Colors.white,
+            elevation: 0,
+            onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  new MaterialPageRoute(builder: (context) => new HomeScene()
+                  ), (route) => route == null);
+            },
+            shape: RoundedRectangleBorder(
+               side: BorderSide(
+                    color: Colors.white,
+                  ),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            child: Text('立即体验', style: TextStyle(fontSize: 30, ))
+          ),
+        ),
+      ],
     );
   }
 }
