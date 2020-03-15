@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xiongmao_reader/app/components/public.dart';
+import 'package:xiongmao_reader/app/pages/message_scene.dart';
 
 
 class HomeScene extends StatefulWidget {
@@ -9,29 +10,33 @@ class HomeScene extends StatefulWidget {
 
 class _HomeSceneState extends State < HomeScene > {
   List<Image> _tabImages = [
-    Image.asset('asset/icon/tuijian-u.png'),
+    Image.asset('asset/icon/msg.png'),
     Image.asset('asset/icon/book-u.png'),
+    Image.asset('asset/icon/app.png'),
     Image.asset('asset/icon/video-u.png'),
     Image.asset('asset/icon/me-u.png'),
   ];
   List<Image> _tabSelectedImages = [
-    Image.asset('asset/icon/tuijian-s.png'),
+    Image.asset('asset/icon/msg-s.png'),
     Image.asset('asset/icon/book-s.png'),
+    Image.asset('asset/icon/app-s.png'),
     Image.asset('asset/icon/video-s.png'),
     Image.asset('asset/icon/me-s.png'),
   ];
 
   List < Widget > _widgetList = [
-    //推荐页面
-    RecommendScene(),
+    //消息
+    MessageScene(),
     //书城
     BookScene(),
+    //推荐页面
+    RecommendScene(),
     //视频
     VideoScene(),
     //我的
     MineScene()
   ];
-  int _index = 0;
+  int _index = 2;
   @override
   void initState() {
     super.initState();
@@ -47,26 +52,29 @@ class _HomeSceneState extends State < HomeScene > {
       bottomNavigationBar: CupertinoTabBar(
         currentIndex: _index,
         onTap: (index) {
-          // if(index == 2){
-          //   AppNavigator.toVideo(context);
-          // }else{
+          if(index == 3){
+            AppNavigator.toVideo(context);
+          }else{
             setState(() {
               _index = index;
             });
-          // }
+          }
         },
         items: [
           BottomNavigationBarItem(
             icon: getTabIcon(0),
-            title: Text('推荐', style: TextStyle())),
+            title: Text('消息', style: TextStyle())),
           BottomNavigationBarItem(
             icon: getTabIcon(1),
             title: Text('书城', style: TextStyle())),
           BottomNavigationBarItem(
             icon: getTabIcon(2),
-            title: Text('视频', style: TextStyle())),
+            title: Text('应用', style: TextStyle())),
           BottomNavigationBarItem(
             icon: getTabIcon(3),
+            title: Text('视频', style: TextStyle())),
+          BottomNavigationBarItem(
+            icon: getTabIcon(4),
             title: Text(
               '我的',
               style: TextStyle(),

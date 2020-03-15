@@ -48,7 +48,11 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: WebviewPlugin(
+            url:"https://www.baidu.com",
+            right: 0,
+            left: 0,
+          ),
         ),
       ),
     );

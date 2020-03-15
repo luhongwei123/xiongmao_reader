@@ -58,11 +58,18 @@ android {
     }
 
     defaultConfig {
+        applicationId "com.example.xiongmao_reader"
         manifestPlaceholders = [
                 AMAP_KEY : "8c25000207844e854f51e67a8322ecca", 
+                JPUSH_PKGNAME : 'com.example.xiongmao_reader',
+                JPUSH_APPKEY : "22e426a797b7f93092bf009a", // NOTE: JPush 上注册的包名对应的 Appkey.
+                JPUSH_CHANNEL : "theChannel", //暂时填写默认值即可.
         ]
-        applicationId "com.example.xiongmao_reader"
-        minSdkVersion 16
+        ndk {
+            //选择要添加的对应 cpu 类型的 .so 库。消息推送需要用到 根据情况选择
+            abiFilters 'armeabi', 'armeabi-v7a' ,'x86', 'x86_64', 'mips', 'mips64' ,'arm64-v8a'
+        }
+        minSdkVersion 17
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

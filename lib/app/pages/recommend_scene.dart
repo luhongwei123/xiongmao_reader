@@ -52,7 +52,7 @@ class _RecommendSceneState extends State<RecommendScene> {
       case 0:
         appbar = new AppBar(
           elevation: 0,
-          title: new Text("精选推荐", style: new TextStyle(color: AppColor.red)),
+          title: new Text("应用中心", style: new TextStyle(color: AppColor.red)),
           iconTheme: new IconThemeData(color: Colors.white),
           backgroundColor: AppColor.paper,
           brightness: Brightness.light,

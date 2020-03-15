@@ -1,13 +1,33 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class WebviewPlugin {
+class WebviewPlugin extends StatelessWidget{
   static const MethodChannel _channel = const MethodChannel('webview_plugin');
-
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
+  }
+
+  WebviewPlugin({
+    @required this.url,
+    this.left,
+    this.right,
+  });
+  final String url;
+  final double left;
+  final double right;
+
+  @override
+  Widget build(BuildContext context) {
+    launch(this.url, (data) {},rect: new Rect.fromLTWH(
+        left,
+        right,
+        MediaQuery.of(context).size.width,
+        MediaQuery.of(context).size.height));
+    return Container(
+    );
   }
 
   //声明plugin加载的方法，参数为url，callback回调，和可选参数Rect（控制）plugin的大小

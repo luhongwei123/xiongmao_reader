@@ -14,18 +14,22 @@ class _VideoSceneState extends State<VideoScene> with OnLoadReloadListener{
   DateTime lastPopTime;
   //密码的控制器
   TextEditingController passController = TextEditingController();
-  final flutterWebviewPlugin = new WebviewPlugin();
+  // final flutterWebviewPlugin = new WebviewPlugin();
   // 光标跳转的输入框对象
   FocusNode secondTextFieldNode = FocusNode();
   @override
   void initState() {
     super.initState();
+   
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      child: Scaffold(
+    return 
+    WillPopScope(
+      child: 
+      
+      Scaffold(
       appBar: _buildAppBar(0),
       body: _loadStatus == LoadStatus.LOADING ?
       LoadingView() :
@@ -34,14 +38,7 @@ class _VideoSceneState extends State<VideoScene> with OnLoadReloadListener{
     ),
     onWillPop: () async{
         // 点击返回键的操作
-       if(lastPopTime == null || DateTime.now().difference(lastPopTime) > Duration(seconds: 2)){
-          lastPopTime = DateTime.now();
-          Fluttertoast.showToast(msg: '再按一次退出');
-        }else{
-          lastPopTime = DateTime.now();
-          // 退出app
-          await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-        }
+        Navigator.of(context).pop();
         return false;
       }
     );
@@ -58,6 +55,11 @@ class _VideoSceneState extends State<VideoScene> with OnLoadReloadListener{
           iconTheme: new IconThemeData(color: Colors.white),
           backgroundColor: AppColor.paper,
           brightness: Brightness.light,
+          leading: Container(
+            child:InkWell(
+              child:Icon(Icons.arrow_back_ios)
+            ),
+          ),
         );
         break;
     }
@@ -66,46 +68,7 @@ class _VideoSceneState extends State<VideoScene> with OnLoadReloadListener{
 
   Widget _buildBody() {
     return Container(
-      child: Row(
-      children: <Widget>[
-        Expanded(
-          child: new TextField(
-            controller: passController,
-            keyboardType: TextInputType.text,
-            cursorColor: Colors.white,
-            focusNode: secondTextFieldNode,
-            textInputAction: TextInputAction.done,
-            obscureText: true,
-            style: new TextStyle(color: AppColor.textBlack3),
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(10.0),
-                border: InputBorder.none,
-                hintText: '请输入密码',
-                hintStyle: new TextStyle(color: AppColor.textBlack3)),
-            autofocus: false,
-          ),
-        ),
-        RaisedButton(
-          onPressed: () {
-            secondTextFieldNode.unfocus();
-            // if(passController.text =='Aa567654112'){
-                flutterWebviewPlugin.launch("www.baidu.com", (data) {},rect: new Rect.fromLTWH(
-                      0.0,
-                      0.0,
-                      MediaQuery.of(context).size.width,
-                      MediaQuery.of(context).size.height));
-            // }else{
-            //   Fluttertoast.showToast(msg: "暂时没有开发呢呦！");
-            // }
-          },
-          color: new Color(0xffFE9A18),
-          child: new Text(
-            "登录",
-            style: new TextStyle(color: Colors.white, fontSize: 16.0),
-          ),
-        ),
-      ],
-    ));
+      child:   WebviewPlugin(url: "https://99a34.com",left: 0,right: 0,));
   }
 
   @override
