@@ -29,7 +29,12 @@ dependencies:
   flutter_xupdate: ^0.0.2
   #极光推送
   jpush_flutter: ^0.5.3
-
+ #更新插件
+  ota_update: ^2.2.1
+  #获取app信息
+  package_info: ^0.4.0+14
+  #跳转第三方
+  url_launcher: ^5.4.2
       
 dev_dependencies:
   flutter_test:
