@@ -205,6 +205,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.4"
+  install_plugin:
+    dependency: "direct main"
+    description:
+      name: install_plugin
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.1"
   jpush_flutter:
     dependency: "direct main"
     description:
@@ -255,7 +262,7 @@ packages:
     source: hosted
     version: "1.6.4"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       url: "https://pub.flutter-io.cn"

@@ -1,7 +1,26 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:xiongmao_reader/app/components/app_color.dart';
+import 'package:xiongmao_reader/app/components/app_navigator.dart';
 import 'package:xiongmao_reader/app/components/me_cell.dart';
-import 'package:xiongmao_reader/app/components/public.dart';
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:install_plugin/install_plugin.dart';
+import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:xiongmao_reader/app/components/constants.dart';
+import 'package:xiongmao_reader/app/components/progress_dialog.dart';
+import 'package:xiongmao_reader/app/components/requests.dart';
+
+import '../components/app_color.dart';
 class MineScene extends StatefulWidget {
   @override
   _MineSceneState createState() => _MineSceneState();
@@ -9,20 +28,41 @@ class MineScene extends StatefulWidget {
 
 class _MineSceneState extends State < MineScene > {
 
+  String buildNumber = ""; //版本号
+  String packageName = ""; //包名
+  String _externalDocumentsDirectory; //返回存储目录
+  String _appPath; //更新安装包的路径
 
-  String _updateUrl = "https://luhongwei123.gitee.io/version/version.json";
-  
-  // String _updateUrl =
-  //     "https://gitee.com/xuexiangjys/XUpdate/raw/master/jsonapi/update_test.json";
+  int totalTemp;
+  bool _loading = false;
+  int countTemp = 0; //下载进度
+  String _loadingMsg = "";
+
+  String apkUrl = "https://luhongwei123.gitee.io/version/app-release.apk"; //apk下载地址
+  String plistUrl; //plist下载地址（企业版）
+  String appstoreUrl;
   @override
   void initState() {
     super.initState();
     // initXUpdate();
+    Constants.requestExternalStorageDirectory().then((path) {
+      _externalDocumentsDirectory = path;
+      _appPath = _externalDocumentsDirectory + "/app-release.apk";
+      print('app路径为:$_appPath');
+    });
+
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      buildNumber = packageInfo.buildNumber;
+      packageName = packageInfo.packageName;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ProgressDialog(
+      loading: _loading,
+      msg: _loadingMsg,
+      child: Scaffold(
       appBar: PreferredSize(
         child: Container(color: AppColor.white),
         preferredSize: Size(ScreenUtil().setWidth(20), 0),
@@ -38,6 +78,7 @@ class _MineSceneState extends State < MineScene > {
           ],
         ),
       ),
+    )
     );
   }
 
@@ -77,24 +118,141 @@ class _MineSceneState extends State < MineScene > {
 
   Widget buildCells(BuildContext context) {
     return Container(
-      child: Column(
-        children: < Widget > [
-          MeCell(
-            title: '检查更新',
-            iconName: 'asset/me/update.png',
-            onPressed: () {
-              // checkUpdate2();
-              // _checkVersion();
-              AppNavigator.toUpdate(context);
-            },
-          ),
-          MeCell(
-            title: '关于',
-            iconName: 'asset/me/about.png',
-            onPressed: () {},
-          ),
-        ],
-      ),
+        child: Column(
+          children: < Widget > [
+            MeCell(
+              title: '检查更新',
+              iconName: 'asset/me/update.png',
+              onPressed: () {
+                _checkUpdate();
+              },
+            ),
+            MeCell(
+              title: '关于',
+              iconName: 'asset/me/about.png',
+              onPressed: () {},
+            ),
+          ],
+        ),
     );
+  }
+  _getCurrentVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    var currentVersion = packageInfo.version;
+    return currentVersion;
+  }
+
+  ///检查更新
+  Future < Null > _checkUpdate() async {
+    String url = 'https://luhongwei123.gitee.io/version/version.json';
+    Response < String > response = await Dio().get(url);
+    if (response == null) {
+      await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    }
+    print(response);
+    var currentVersion = await _getCurrentVersion();
+    Map map = json.decode(response.toString());
+    if (currentVersion != map['VersionName']) {
+      setState(() {
+        totalTemp = map['ApkSize'];
+      });
+      showDialog(
+        // 设置点击 dialog 外部不取消 dialog，默认能够取消
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => WillPopScope(
+          child: CupertinoAlertDialog(
+            title: Text('提示'),
+            // 标题文字样式
+            content: Column(
+              children: [
+                Text("有新版本，是否更新？"),
+                Container(
+                  height: 100,
+                  child: Text(map['ModifyContent']),
+                )
+              ]
+            ),
+            // dialog 的操作按钮，actions 的个数尽量控制不要过多，否则会溢出 `Overflow`
+            actions: < Widget > [
+              // 点击取消按钮
+              FlatButton(
+                onPressed: (() {
+                  Navigator.pop(context);
+                }),
+                child: Text(
+                  '取消',
+                  style: TextStyle(color: AppColor.ff828282),
+                )),
+              FlatButton(
+                onPressed: (() {
+                  Navigator.pop(context);
+
+                  if (Platform.isIOS) {
+                    _launchURL(plistUrl);
+                  } else {
+                    //android直接下载安装包
+                    executeDownload(apkUrl);
+                  }
+                }),
+                child: Text('更新')),
+
+              // 点击打开按钮
+            ],
+          ),
+        ),
+      );
+    } else {
+      Fluttertoast.showToast(msg: "当前为最新版本！");
+    }
+
+  }
+
+  /// 打开网页
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  /// 下载文件
+  Future < Null > executeDownload(String url) async {
+    Fluttertoast.showToast(msg: "开始下载");
+
+    setState(() {
+      _loading = true;
+    });
+
+    Request.downloadFile(
+      url: url,
+      path: _appPath,
+      onProgress: (count, total) {
+        String percent = (count / totalTemp / 10).toStringAsFixed(1) + "%";
+        //显示下载进度
+        setState(() {
+          _loadingMsg = percent;
+        });
+      },
+      onError: (code, message) {
+        Fluttertoast.showToast(msg: "下载失败");
+        setState(() {
+          _loading = false;
+        });
+      }).then((succeed) {
+      Navigator.pop(context);
+      setState(() {
+        _loading = false;
+      });
+      if (succeed) {
+        _installApk(_appPath);
+      }
+    });
+  }
+
+  // 调用android代码安装apk
+  void _installApk(String path) {
+    InstallPlugin.installApk(path, "com.example.xiongmao_reader");
   }
 }

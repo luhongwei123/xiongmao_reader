@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xiongmao_reader/app/components/public.dart';
 import 'package:xiongmao_reader/app/pages/books/books_search.dart';
-import 'package:xiongmao_reader/app/pages/process.dart';
 import 'package:xiongmao_reader/app/pages/recommends/games/game_2048.dart';
 
 class AppNavigator {
@@ -58,9 +57,5 @@ class AppNavigator {
   static toSeacher(BuildContext context){
      AppNavigator.push(context, BooksSearchScene());
   }
-  
-   //小说搜索、
-  static toUpdate(BuildContext context){
-     AppNavigator.push(context, ProcessorScene());
-  }
+
 }

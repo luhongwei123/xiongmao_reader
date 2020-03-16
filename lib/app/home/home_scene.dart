@@ -13,14 +13,14 @@ class _HomeSceneState extends State < HomeScene > {
     Image.asset('asset/icon/msg.png'),
     Image.asset('asset/icon/book-u.png'),
     Image.asset('asset/icon/app.png'),
-    Image.asset('asset/icon/video-u.png'),
+    // Image.asset('asset/icon/video-u.png'),
     Image.asset('asset/icon/me-u.png'),
   ];
   List<Image> _tabSelectedImages = [
     Image.asset('asset/icon/msg-s.png'),
     Image.asset('asset/icon/book-s.png'),
     Image.asset('asset/icon/app-s.png'),
-    Image.asset('asset/icon/video-s.png'),
+    // Image.asset('asset/icon/video-s.png'),
     Image.asset('asset/icon/me-s.png'),
   ];
 
@@ -32,7 +32,7 @@ class _HomeSceneState extends State < HomeScene > {
     //推荐页面
     RecommendScene(),
     //视频
-    VideoScene(),
+    // VideoScene(),
     //我的
     MineScene()
   ];
