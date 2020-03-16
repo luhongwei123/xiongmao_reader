@@ -124,7 +124,9 @@ class _RecommendSceneState extends State<RecommendScene> {
     var news = InkWell(
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,
-      onTap: () {},
+      onTap: () {
+          AppNavigator.toNews(context);
+      },
       child: Column(
         children: <Widget>[
           Image.asset("asset/recommends/news.png",

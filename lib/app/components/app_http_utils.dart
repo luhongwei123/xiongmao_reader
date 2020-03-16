@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:xiongmao_reader/app/components/api.dart';
 
 import 'http_request.dart';
 
@@ -147,6 +148,20 @@ class HttpUtils{
     var dio = Request.getDio();
     String path = Request.baseApi + '/weather/forecast/'+cityName;
     Response<String>  response  = await dio.get(path,queryParameters: params);
+    var data = response.data;
+    return json.decode(data);
+  }
+
+  //获取新闻类型
+  static Future getMsgTypes()async{
+    Response<String>  response = await Request.getDio().get(API.getMessageTypes);
+    var data = response.data;
+    return json.decode(data);
+  }
+
+  //获取新闻列表
+  static Future getMsgList(int id,int index)async{
+    Response<String>  response = await Request.getDio().get(API.getMessageList+"&typeId=$id&page=$index");
     var data = response.data;
     return json.decode(data);
   }
