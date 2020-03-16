@@ -63,22 +63,22 @@ class _MineSceneState extends State < MineScene > {
       loading: _loading,
       msg: _loadingMsg,
       child: Scaffold(
-      appBar: PreferredSize(
-        child: Container(color: AppColor.white),
-        preferredSize: Size(ScreenUtil().setWidth(20), 0),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: ListView(
-          physics: BouncingScrollPhysics(),
-          children: < Widget > [
-            _Header(),
-            SizedBox(height: 10),
-            buildCells(context),
-          ],
+        appBar: PreferredSize(
+          child: Container(color: AppColor.white),
+          preferredSize: Size(ScreenUtil().setWidth(20), 0),
         ),
-      ),
-    )
+        body: Container(
+          color: Colors.white,
+          child: ListView(
+            physics: BouncingScrollPhysics(),
+            children: < Widget > [
+              _Header(),
+              SizedBox(height: 10),
+              buildCells(context),
+            ],
+          ),
+        ),
+      )
     );
   }
 
@@ -118,22 +118,22 @@ class _MineSceneState extends State < MineScene > {
 
   Widget buildCells(BuildContext context) {
     return Container(
-        child: Column(
-          children: < Widget > [
-            MeCell(
-              title: '检查更新',
-              iconName: 'asset/me/update.png',
-              onPressed: () {
-                _checkUpdate();
-              },
-            ),
-            MeCell(
-              title: '关于',
-              iconName: 'asset/me/about.png',
-              onPressed: () {},
-            ),
-          ],
-        ),
+      child: Column(
+        children: < Widget > [
+          MeCell(
+            title: '检查更新',
+            iconName: 'asset/me/update.png',
+            onPressed: () {
+              _checkUpdate();
+            },
+          ),
+          MeCell(
+            title: '关于',
+            iconName: 'asset/me/about.png',
+            onPressed: () {},
+          ),
+        ],
+      ),
     );
   }
   _getCurrentVersion() async {
@@ -152,6 +152,8 @@ class _MineSceneState extends State < MineScene > {
     print(response);
     var currentVersion = await _getCurrentVersion();
     Map map = json.decode(response.toString());
+
+    List strs = map['ModifyContent'] as List;
     if (currentVersion != map['VersionName']) {
       setState(() {
         totalTemp = map['ApkSize'];
@@ -160,47 +162,54 @@ class _MineSceneState extends State < MineScene > {
         // 设置点击 dialog 外部不取消 dialog，默认能够取消
         barrierDismissible: false,
         context: context,
-        builder: (context) => WillPopScope(
-          child: CupertinoAlertDialog(
-            title: Text('提示'),
-            // 标题文字样式
-            content: Column(
-              children: [
-                Text("有新版本，是否更新？"),
-                Container(
-                  height: 100,
-                  child: Text(map['ModifyContent']),
-                )
-              ]
+        builder: (context) {
+          List<Widget> contentList=[];
+
+          var style=TextStyle(fontSize: 15,);
+          contentList.addAll(strs.map((item){
+            return Text(item.toString(),style: style,);
+          }).toList());
+          return WillPopScope(
+            child: CupertinoAlertDialog(
+              title: Text('提示'),
+              // 标题文字样式
+              content: Column(
+                children: [
+                  Text("有新版本，是否更新？"),
+                  Column(
+                    children:contentList
+                  ),
+                ]
+              ),
+              // dialog 的操作按钮，actions 的个数尽量控制不要过多，否则会溢出 `Overflow`
+              actions: < Widget > [
+                // 点击取消按钮
+                FlatButton(
+                  onPressed: (() {
+                    Navigator.pop(context);
+                  }),
+                  child: Text(
+                    '取消',
+                    style: TextStyle(color: AppColor.ff828282),
+                  )),
+                FlatButton(
+                  onPressed: (() {
+                    Navigator.pop(context);
+
+                    if (Platform.isIOS) {
+                      _launchURL(plistUrl);
+                    } else {
+                      //android直接下载安装包
+                      executeDownload(apkUrl);
+                    }
+                  }),
+                  child: Text('更新')),
+
+                // 点击打开按钮
+              ],
             ),
-            // dialog 的操作按钮，actions 的个数尽量控制不要过多，否则会溢出 `Overflow`
-            actions: < Widget > [
-              // 点击取消按钮
-              FlatButton(
-                onPressed: (() {
-                  Navigator.pop(context);
-                }),
-                child: Text(
-                  '取消',
-                  style: TextStyle(color: AppColor.ff828282),
-                )),
-              FlatButton(
-                onPressed: (() {
-                  Navigator.pop(context);
-
-                  if (Platform.isIOS) {
-                    _launchURL(plistUrl);
-                  } else {
-                    //android直接下载安装包
-                    executeDownload(apkUrl);
-                  }
-                }),
-                child: Text('更新')),
-
-              // 点击打开按钮
-            ],
-          ),
-        ),
+          );
+        },
       );
     } else {
       Fluttertoast.showToast(msg: "当前为最新版本！");

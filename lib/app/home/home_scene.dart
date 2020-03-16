@@ -52,13 +52,13 @@ class _HomeSceneState extends State < HomeScene > {
       bottomNavigationBar: CupertinoTabBar(
         currentIndex: _index,
         onTap: (index) {
-          if(index == 3){
-            AppNavigator.toVideo(context);
-          }else{
+          // if(index == 3){
+          //   AppNavigator.toVideo(context);
+          // }else{
             setState(() {
               _index = index;
             });
-          }
+          // }
         },
         items: [
           BottomNavigationBarItem(
@@ -70,11 +70,11 @@ class _HomeSceneState extends State < HomeScene > {
           BottomNavigationBarItem(
             icon: getTabIcon(2),
             title: Text('应用', style: TextStyle())),
+          // BottomNavigationBarItem(
+          //   icon: getTabIcon(3),
+          //   title: Text('视频', style: TextStyle())),
           BottomNavigationBarItem(
             icon: getTabIcon(3),
-            title: Text('视频', style: TextStyle())),
-          BottomNavigationBarItem(
-            icon: getTabIcon(4),
             title: Text(
               '我的',
               style: TextStyle(),
