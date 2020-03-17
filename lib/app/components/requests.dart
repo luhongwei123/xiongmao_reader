@@ -1,15 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:xiongmao_reader/app/model/message_entity.dart';
-
-import 'api.dart';
-import 'constants.dart';
 import 'http.dart';
 
 /// 网络请求
 class Request {
   static Http http = Http();
 
-  
   /// 下载文件
   static Future<bool> downloadFile(
       {@required String url,

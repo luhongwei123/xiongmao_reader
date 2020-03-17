@@ -126,6 +126,7 @@ class _RecommendSceneState extends State<RecommendScene> {
       splashColor: Colors.transparent,
       onTap: () {
         AppNavigator.toNews(context);
+
       },
       child: Column(
         children: <Widget>[

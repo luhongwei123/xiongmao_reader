@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:xiongmao_reader/app/components/api.dart';
 
 import 'api.dart';
 import 'http_request.dart';
@@ -151,7 +152,6 @@ class HttpUtils{
     var data = response.data;
     return json.decode(data);
   }
-   //获取新闻类型
   static Future getMsgTypes()async{
     Response<String>  response = await Request.getDio().get(API.getMessageTypes);
     var data = response.data;
