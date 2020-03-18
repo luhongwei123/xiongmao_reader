@@ -9,4 +9,6 @@ class API {
   static const String getMessageTypes = baseApi +'/news/types?app_id='+app_id+"&app_secret="+app_secret;
 
   static const String getMessageList = baseApi +'/news/list?app_id='+app_id+"&app_secret="+app_secret;
+
+  static const String getMessageDetails = baseApi +'/news/details?app_id='+app_id+"&app_secret="+app_secret;
 }

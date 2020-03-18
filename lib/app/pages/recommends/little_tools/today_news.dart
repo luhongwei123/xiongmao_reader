@@ -29,6 +29,7 @@ class _TodayNewsState extends State < TodayNews > with OnLoadReloadListener, Sin
   init() async {
     await HttpUtils.getMsgTypes().then((response) {
       List list = response['data'] as List;
+      print(list);
       types = list;
       for (var i = 0; i < list.length; i++) {
         tabs.add(Tab(text: list[i]['typeName']));
@@ -49,7 +50,59 @@ class _TodayNewsState extends State < TodayNews > with OnLoadReloadListener, Sin
       appBar: _appBarBuilder(),
       body: Column(
         children: < Widget > [
-          Container(
+          // Container(
+          //   color: Colors.white,
+          //   padding: EdgeInsets.only(left: 0, bottom: 0),
+          //   child: tabs.length > 0 ?
+          //   TabBar(
+          //     controller: _controller, //可以和TabBarView使用同一个TabController
+          //     tabs: tabs,
+          //     isScrollable: true,
+          //     indicatorColor: Colors.white,
+          //     indicator: UnderlineTabIndicator(
+          //       borderSide: BorderSide(width: 2.0, color: Colors.white),
+          //       insets: EdgeInsets.zero,
+          //     ),
+          //     indicatorWeight: 1,
+          //     indicatorSize: TabBarIndicatorSize.tab,
+          //     indicatorPadding: EdgeInsets.only(top: 0, bottom: 0),
+          //     labelPadding: EdgeInsets.only(left: 5, right: 5, bottom: 0),
+          //     labelColor: AppColor.red,
+          //     labelStyle: TextStyle(
+          //       backgroundColor: Colors.white,
+          //       fontSize: ScreenUtil().setSp(40),
+          //     ),
+          //     unselectedLabelColor: Colors.black38,
+          //     unselectedLabelStyle: TextStyle(
+          //       fontSize: ScreenUtil().setSp(28),
+          //     ),
+          //   ) : Container(),
+          // ),
+          Expanded(
+            child: tabs.length > 0 ?TabBarView(
+              controller: _controller,
+              children: buildNews(),
+            ):Container(),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _appBarBuilder() {
+    return PreferredSize(
+      child: new AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        brightness: Brightness.light,
+        automaticallyImplyLeading: false,
+        // title: Column(
+        //   children: < Widget > [
+        //     TextField(),
+
+        //   ],
+        // ),
+        title: Container(
             color: Colors.white,
             padding: EdgeInsets.only(left: 0, bottom: 0),
             child: tabs.length > 0 ?
@@ -77,30 +130,6 @@ class _TodayNewsState extends State < TodayNews > with OnLoadReloadListener, Sin
               ),
             ) : Container(),
           ),
-          Expanded(
-            child: tabs.length > 0 ?TabBarView(
-              controller: _controller,
-              children: buildNews(),
-            ):Container(),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _appBarBuilder() {
-    return PreferredSize(
-      child: new AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.white,
-        brightness: Brightness.light,
-        automaticallyImplyLeading: false,
-        title: Column(
-          children: < Widget > [
-            TextField(),
-
-          ],
-        ),
       ),
       preferredSize: Size.fromHeight(40),
     );
@@ -115,5 +144,10 @@ class _TodayNewsState extends State < TodayNews > with OnLoadReloadListener, Sin
     return list;
   }
   @override
-  void onReload() {}
+  void onReload() {
+     setState(() {
+      _loadStatus = LoadStatus.LOADING;
+    });
+    init();
+  }
 }

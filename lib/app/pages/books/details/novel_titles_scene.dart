@@ -38,7 +38,14 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > with OnLoadReloa
 
   void getData() async {
     var response = await HttpUtils.getCatalogListByLimit(this.widget.article.id, page);
-    list.addAll(response['data']['catalog'] as List);
+    List temp = response['data']['catalog'] as List;
+    if(temp.length != 50){
+      if(!list.contains(temp)){
+        list.addAll(temp);
+      }
+    }else{
+      list.addAll(response['data']['catalog'] as List);
+    }
     _loadStatus = LoadStatus.SUCCESS;
     setState(() {  });
   }
@@ -123,5 +130,9 @@ class _NovelTitlesSceneState extends State < NovelTitlesScene > with OnLoadReloa
 
   @override
   void onReload() {
+     setState(() {
+      _loadStatus = LoadStatus.LOADING;
+    });
+    getData();
   }
 }

@@ -27,7 +27,7 @@ class HttpUtils{
    static Future getCatalogListByLimit(String id,int page) async{
       Map<String,Object> params = {};
       params['bookId'] = id;
-      params['limit'] = 20;
+      params['limit'] = 50;
       params['page'] = page;
       var dio = Request.getDio();
       String path = Request.baseUrl + 'catalogList';
@@ -161,6 +161,13 @@ class HttpUtils{
   //获取新闻列表
   static Future getMsgList(int id,int index)async{
     Response<String>  response = await Request.getDio().get(API.getMessageList+"&typeId=$id&page=$index");
+    var data = response.data;
+    return json.decode(data);
+  }
+
+  //获取新闻详情
+  static Future getMessageDetails(String id)async{
+    Response<String>  response = await Request.getDio().get(API.getMessageDetails+"&newsId=$id");
     var data = response.data;
     return json.decode(data);
   }

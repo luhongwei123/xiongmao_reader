@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xiongmao_reader/app/components/public.dart';
 import 'package:xiongmao_reader/app/pages/books/books_search.dart';
 import 'package:xiongmao_reader/app/pages/recommends/games/game_2048.dart';
+import 'package:xiongmao_reader/app/pages/recommends/little_tools/news_info_details.dart';
 import 'package:xiongmao_reader/app/pages/recommends/little_tools/today_news.dart';
 class AppNavigator {
   static push(BuildContext context, Widget scene) {
@@ -60,5 +61,9 @@ class AppNavigator {
 
  static toNews(BuildContext context){
      AppNavigator.push(context, TodayNews());
+  }
+
+   static toNewsDetails(BuildContext context,Map map){
+     AppNavigator.push(context, NewsInfoDetails(map));
   }
 }

@@ -201,7 +201,12 @@ class _BooksSearchSceneState extends State < BooksSearchScene > with AutomaticKe
   }
 
   @override
-  void onReload() {}
+  void onReload() {
+    setState(() {
+      _loadStatus = LoadStatus.LOADING;
+    });
+    _initBookList(this.controller.text);
+  }
 
   @override
   bool get wantKeepAlive => true;
