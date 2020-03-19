@@ -1,21 +1,16 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:video_player/video_player.dart';
 import 'package:xiongmao_reader/app/components/app_http_utils.dart';
 import 'package:xiongmao_reader/app/components/app_navigator.dart';
 import 'package:xiongmao_reader/app/components/behaver.dart';
-import 'package:xiongmao_reader/app/components/event_util.dart';
 import 'package:xiongmao_reader/app/components/load_view.dart';
 import 'package:xiongmao_reader/app/components/public.dart';
-// import 'package:xiongmao_reader/app/components/public.dart';
-import 'package:xiongmao_reader/app/pages/recommends/little_tools/video_scene.dart';
+import 'package:xiongmao_reader/app/pages/recommends/little_tools/short_video.dart';
 
 
 class NewsDetailScene extends StatefulWidget {
@@ -25,15 +20,11 @@ class NewsDetailScene extends StatefulWidget {
   _NewsDetailSceneState createState() => _NewsDetailSceneState();
 }
 
-class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadListener,AutomaticKeepAliveClientMixin {
+class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadListener, AutomaticKeepAliveClientMixin {
   LoadStatus _loadStatus = LoadStatus.LOADING;
   GlobalKey < RefreshHeaderState > _headerKey = new GlobalKey < RefreshHeaderState > ();
   GlobalKey < RefreshFooterState > _footerKey = new GlobalKey < RefreshFooterState > ();
-  VideoPlayerController _controller;
-
   Future _initializeVideoPlayerFuture;
-
-  ChewieController chewieController;
 
   ScrollController scrollController = new ScrollController();
   int page = 1;
@@ -71,7 +62,7 @@ class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadL
       FailureView(this) :
       ScrollConfiguration(
         behavior: MyBehavior(),
-        child: EasyRefresh(
+        child: this.widget.index != 526 ? EasyRefresh(
           refreshFooter: ClassicsFooter(
             key: _footerKey,
             bgColor: Colors.white,
@@ -114,9 +105,8 @@ class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadL
                   if (item['videoList'] == null) {
                     Fluttertoast.showToast(msg: "无法播放该视频！");
                   } else {
-                    if (this.widget.index == 522 || this.widget.index == 526) {
-                      _controller = VideoPlayerController.network(videoList[0].toString());
-                      AppNavigator.toVideo(context, _controller);
+                    if (this.widget.index == 522) {
+                      AppNavigator.toVideo(context, videoList[0].toString(), item['title']);
                     } else {
                       AppNavigator.toNewsDetails(context, item);
                     }
@@ -198,6 +188,36 @@ class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadL
           loadMore: () async {
             init(this.widget.index);
           },
+        ) : RefreshIndicator(
+          onRefresh: () async {
+            init(this.widget.index);
+          },
+          child: PageView.builder(
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              var item = list[index];
+              if (item['videoList'] == null) {
+                return Container();
+              } else {
+                List videoList = item['videoList'] as List;
+                return Stack(
+                  children: < Widget > [
+                    ShortVideoScene(videoList[0].toString()),
+                    Positioned(
+                      top: 20,
+                      child: Text(item['title'],
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
+                        style: TextStyle(fontSize: ScreenUtil().setSp(35), color: Colors.white, ), )
+                    )
+                  ],
+                );
+              }
+            },
+            scrollDirection: Axis.vertical,
+            controller: new PageController(),
+
+          ),
         ),
       );
   }

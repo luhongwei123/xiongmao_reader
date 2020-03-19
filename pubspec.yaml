@@ -1,6 +1,6 @@
 name: xiongmao_reader
 description: i娱乐，熊猫互娱出品
-version: 1.0.6
+version: 1.1.1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -11,7 +11,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   flukit: ^1.0.2
   flutter_screenutil: ^0.7.0
-  
+  screen: ^0.0.5
   battery: ^0.3.0
   fluttertoast: ^3.1.3
   shared_preferences: ^0.5.6
@@ -26,7 +26,7 @@ dependencies:
   webview_plugin:
      path: webview_plugin/
   video_player: ^0.10.8+1
-  flutter_xupdate: ^0.0.2
+  #flutter_xupdate: ^0.0.2
   #极光推送
   jpush_flutter: ^0.5.3
   #获取app信息
@@ -34,11 +34,14 @@ dependencies:
   #跳转第三方
   url_launcher: ^5.4.2
   flutter_swiper: ^1.1.6
+  awsome_video_player: ^1.0.6
 
   path_provider: ^1.3.0
   install_plugin: ^2.0.1
-  chewie: ^0.9.10
-  event_bus: ^1.1.0
+  #chewie: ^0.9.10
+ # event_bus: ^1.1.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -51,8 +51,8 @@ class AppNavigator {
       AppNavigator.push(context, GameScene());
   }
   
-  static toVideo(BuildContext context,VideoPlayerController controller){
-      AppNavigator.push(context, VideoPlayerScene(controller));
+  static toVideo(BuildContext context,String url,String title){
+      AppNavigator.push(context, VideoPlayerScene(url,title));
   }
 
 
