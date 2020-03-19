@@ -1,8 +1,20 @@
+import 'dart:ui';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:video_player/video_player.dart';
 import 'package:xiongmao_reader/app/components/app_http_utils.dart';
+import 'package:xiongmao_reader/app/components/app_navigator.dart';
+import 'package:xiongmao_reader/app/components/behaver.dart';
+import 'package:xiongmao_reader/app/components/event_util.dart';
+import 'package:xiongmao_reader/app/components/load_view.dart';
 import 'package:xiongmao_reader/app/components/public.dart';
+// import 'package:xiongmao_reader/app/components/public.dart';
 import 'package:xiongmao_reader/app/pages/recommends/little_tools/video_scene.dart';
 
 
@@ -13,11 +25,15 @@ class NewsDetailScene extends StatefulWidget {
   _NewsDetailSceneState createState() => _NewsDetailSceneState();
 }
 
-class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadListener, AutomaticKeepAliveClientMixin {
+class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadListener,AutomaticKeepAliveClientMixin {
   LoadStatus _loadStatus = LoadStatus.LOADING;
   GlobalKey < RefreshHeaderState > _headerKey = new GlobalKey < RefreshHeaderState > ();
   GlobalKey < RefreshFooterState > _footerKey = new GlobalKey < RefreshFooterState > ();
   VideoPlayerController _controller;
+
+  Future _initializeVideoPlayerFuture;
+
+  ChewieController chewieController;
 
   ScrollController scrollController = new ScrollController();
   int page = 1;
@@ -27,11 +43,12 @@ class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadL
   void initState() {
     super.initState();
     init(this.widget.index);
+
   }
-  
+
   init(int indexs) async {
-    if(list.length > 0){
-      history.addAll(list.sublist(3,list.length));
+    if (list.length > 0) {
+      history.addAll(list.sublist(3, list.length));
     }
     await HttpUtils.getMsgList(indexs, page).then((response) {
       list = response['data'] as List;
@@ -47,6 +64,7 @@ class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadL
   }
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return _loadStatus == LoadStatus.LOADING ?
       LoadingView() :
       _loadStatus == LoadStatus.FAILURE ?
@@ -79,11 +97,7 @@ class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadL
             moreInfo: '最近加载于 %T',
             refreshReadyText: '快给老子放手TT',
           ),
-          onRefresh: ()async{
-            // history.addAll(list);
-            // setState(() {
-            //   list = [];
-            // });
+          onRefresh: () async {
             init(this.widget.index);
           },
           child: ListView.builder(
@@ -91,91 +105,93 @@ class _NewsDetailSceneState extends State < NewsDetailScene > with OnLoadReloadL
             padding: EdgeInsets.all(0),
             itemBuilder: (context, index) {
               var item = list[index];
-              if(this.widget.index == 522){
-                List videoList = item['videoList'] as List;
-                if(videoList == null){
-                  return Container();
-                }
-                _controller = VideoPlayerController.network(videoList[0].toString());
-                return VideoPlayerScene(_controller);
-              }else{
-                List imageList = item['imgList'] as List;
-                var widget = InkWell(
-                  splashColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  onTap: (){
+              List imageList = item['imgList'] as List;
+              var widget = InkWell(
+                splashColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                onTap: () {
+                  List videoList = item['videoList'] as List;
+                  if (item['videoList'] == null) {
+                    Fluttertoast.showToast(msg: "无法播放该视频！");
+                  } else {
+                    if (this.widget.index == 522 || this.widget.index == 526) {
+                      _controller = VideoPlayerController.network(videoList[0].toString());
+                      AppNavigator.toVideo(context, _controller);
+                    } else {
                       AppNavigator.toNewsDetails(context, item);
-                  },
-                  child: Column(
-                    children: < Widget > [
-                      Container(
-                        child: Row(
-                          children: < Widget > [
-                            Column(
-                              children: < Widget > [
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(10, 5, 5, 5),
-                                  width: ScreenUtil().setWidth(460),
-                                  child: Text(item['title'],
-                                    textAlign: TextAlign.left, //文本对齐方式  居中
-                                    textDirection: TextDirection.ltr, //
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    style: TextStyle(
-                                      fontSize: ScreenUtil().setSp(30)
-                                    ),
+                    }
+                  }
+                },
+                child: Column(
+                  children: < Widget > [
+                    Container(
+                      child: Row(
+                        children: < Widget > [
+                          Column(
+                            children: < Widget > [
+                              Container(
+                                padding: EdgeInsets.fromLTRB(10, 5, 5, 5),
+                                width: ScreenUtil().setWidth(460),
+                                child: Text(item['title'],
+                                  textAlign: TextAlign.left, //文本对齐方式  居中
+                                  textDirection: TextDirection.ltr, //
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                    fontSize: ScreenUtil().setSp(30)
                                   ),
                                 ),
-                                Container(
-                                  padding: EdgeInsets.only(left: ScreenUtil().setWidth(30)),
-                                  width: ScreenUtil().setWidth(460),
-                                  child: Row(
-                                    children: < Widget > [
-                                      Text("来源：${item['source']}",
-                                        textAlign: TextAlign.left, //文本对齐方式  居中
-                                        textDirection: TextDirection.ltr,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: ScreenUtil().setSp(15)
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(left: ScreenUtil().setWidth(30)),
-                                  width: ScreenUtil().setWidth(460),
-                                  child: Text("更新时间：${item['postTime']}",
-                                    textAlign: TextAlign.left, //文本对齐方式  居中
-                                    textDirection: TextDirection.ltr,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: ScreenUtil().setSp(15)
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            imageList != null && imageList.length > 0 ?
-                            Container(
-                              padding: EdgeInsets.only(right: 5),
-                              child: CachedNetworkImage(
-                                imageUrl: imageList[0],
-                                width: ScreenUtil().setWidth(250),
-                                height: ScreenUtil().setHeight(180),
                               ),
-                            ) : Container(),
-                          ],
-                        ),
+                              Container(
+                                padding: EdgeInsets.only(left: ScreenUtil().setWidth(30)),
+                                width: ScreenUtil().setWidth(460),
+                                child: Row(
+                                  children: < Widget > [
+                                    Text("来源：${item['source']}",
+                                      textAlign: TextAlign.left, //文本对齐方式  居中
+                                      textDirection: TextDirection.ltr,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: ScreenUtil().setSp(15)
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(left: ScreenUtil().setWidth(30)),
+                                width: ScreenUtil().setWidth(460),
+                                child: Text("更新时间：${item['postTime']}",
+                                  textAlign: TextAlign.left, //文本对齐方式  居中
+                                  textDirection: TextDirection.ltr,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: ScreenUtil().setSp(15)
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          imageList != null && imageList.length > 0 ?
+                          Container(
+                            padding: EdgeInsets.only(right: 5),
+                            child: CachedNetworkImage(
+                              imageUrl: imageList[0],
+                              width: ScreenUtil().setWidth(250),
+                              height: ScreenUtil().setHeight(180),
+                            ),
+                          ) : Container(),
+                        ],
                       ),
-                      Divider(),
-                    ],
-                  ),
-                );
-                return widget;
-              }
+                    ),
+                    Divider(),
+                  ],
+                ),
+              );
+              return widget;
+              // }
             },
             itemCount: list.length,
           ),

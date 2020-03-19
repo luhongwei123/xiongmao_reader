@@ -153,21 +153,25 @@ class HttpUtils{
     return json.decode(data);
   }
   static Future getMsgTypes()async{
-    Response<String>  response = await Request.getDio().get(API.getMessageTypes);
+    var dio = Request.getDio();
+    Response<String>  response = await dio.get(API.getMessageTypes);
     var data = response.data;
     return json.decode(data);
   }
 
   //获取新闻列表
   static Future getMsgList(int id,int index)async{
-    Response<String>  response = await Request.getDio().get(API.getMessageList+"&typeId=$id&page=$index");
+    print(API.getMessageList+"&typeId=$id&page=$index");
+    var dio = Request.getDio();
+    Response<String>  response = await dio.get(API.getMessageList+"&typeId=$id&page=$index");
     var data = response.data;
     return json.decode(data);
   }
 
   //获取新闻详情
   static Future getMessageDetails(String id)async{
-    Response<String>  response = await Request.getDio().get(API.getMessageDetails+"&newsId=$id");
+    var dio = Request.getDio();
+    Response<String>  response = await dio.get(API.getMessageDetails+"&newsId=$id");
     var data = response.data;
     return json.decode(data);
   }
