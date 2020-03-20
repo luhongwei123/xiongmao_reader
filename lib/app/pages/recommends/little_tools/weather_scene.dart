@@ -26,7 +26,6 @@ class _WeatherSceneState extends State < WeatherScene > with OnLoadReloadListene
     Map < PermissionGroup, PermissionStatus > permissions = await PermissionHandler().requestPermissions([PermissionGroup.location]);
     // 申请结果
     PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.location);
-
     if (permission == PermissionStatus.granted) {
       await AMapLocationClient.startup(new AMapLocationOption(desiredAccuracy:CLLocationAccuracy.kCLLocationAccuracyHundredMeters));
       await AMapLocationClient.getLocation(true).then((response) {

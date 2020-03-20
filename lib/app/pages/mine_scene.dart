@@ -195,7 +195,7 @@ class _MineSceneState extends State < MineScene > {
                 FlatButton(
                   onPressed: (() {
                     Navigator.pop(context);
-
+                      
                     if (Platform.isIOS) {
                       _launchURL(plistUrl);
                     } else {
@@ -238,7 +238,7 @@ class _MineSceneState extends State < MineScene > {
       url: url,
       path: _appPath,
       onProgress: (count, total) {
-        String percent = (count / totalTemp / 10).toStringAsFixed(1) + "%";
+        String percent = (count / totalTemp * 100).toStringAsFixed(1) + "%";
         //显示下载进度
         setState(() {
           _loadingMsg = percent;

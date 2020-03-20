@@ -3,6 +3,10 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:xiongmao_reader/app/components/string_utils.dart';
 
+const String EventToggleTabBarIndex = 'EventToggleTabBarIndex';
+
+const String EventVideoPlayPosition = "EventVideoPlayPosition";
+
 /// 常量
 class Constants {
 

@@ -47,7 +47,6 @@ class _AppSceneState extends State<AppScene> {
     } on Exception {
       platformVersion = 'Failed to get platform version.';
     }
-
     jpush.setup(
       appKey: "22e426a797b7f93092bf009a", //你自己应用的 AppKey
       channel: "theChannel",
