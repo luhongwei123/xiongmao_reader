@@ -110,7 +110,10 @@ class _RecommendSceneState extends State<RecommendScene> {
     var kaixin = InkWell(
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,
-      onTap: () {},
+      onTap: () {
+        AppNavigator.toJokes(context);
+
+      },
       child: Column(
         children: <Widget>[
           Image.asset("asset/recommends/kaixin.png",

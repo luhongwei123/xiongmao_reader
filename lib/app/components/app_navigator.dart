@@ -3,6 +3,7 @@ import 'package:video_player/video_player.dart';
 import 'package:xiongmao_reader/app/components/public.dart';
 import 'package:xiongmao_reader/app/pages/books/books_search.dart';
 import 'package:xiongmao_reader/app/pages/recommends/games/game_2048.dart';
+import 'package:xiongmao_reader/app/pages/recommends/little_tools/jokes_scene.dart';
 import 'package:xiongmao_reader/app/pages/recommends/little_tools/news_info_details.dart';
 import 'package:xiongmao_reader/app/pages/recommends/little_tools/today_news.dart';
 import 'package:xiongmao_reader/app/pages/recommends/little_tools/video_scene.dart';
@@ -67,5 +68,9 @@ class AppNavigator {
 
    static toNewsDetails(BuildContext context,Map map){
      AppNavigator.push(context, NewsInfoDetails(map));
+  }
+
+  static toJokes(BuildContext context){
+    AppNavigator.push(context, JokesScene());
   }
 }

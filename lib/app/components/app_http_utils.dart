@@ -175,4 +175,13 @@ class HttpUtils{
     var data = response.data;
     return json.decode(data);
   }
+
+
+  //笑话获取 默认每页10条
+  static Future getJokes(int page)async{
+    var dio = Request.getDio();
+    Response<String>  response = await dio.get(API.getJokes+"&page=$page");
+    var data = response.data;
+    return json.decode(data);
+  }
 }

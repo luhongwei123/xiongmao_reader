@@ -1,6 +1,6 @@
 name: xiongmao_reader
 description: i娱乐，熊猫互娱出品
-version: 1.1.5
+version: 1.1.6
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
